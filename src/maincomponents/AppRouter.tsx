@@ -5,13 +5,11 @@ import ScenarioPage from '../pages/ScenarioPage';
 
 const AppRouter: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/scenario" element={<ScenarioPage />} />
-        {/* Ajoutez d'autres routes au besoin */}
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/scenario" element={<ScenarioPage />} />
+      {/* Ajoutez d'autres routes au besoin */}
+    </Routes>
   );
 };
 
