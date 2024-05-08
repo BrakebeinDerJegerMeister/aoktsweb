@@ -13,6 +13,7 @@ const colors = {
     700: '#2a69ac',
   },
 }
+
 const theme = extendTheme({ colors })
 
 
