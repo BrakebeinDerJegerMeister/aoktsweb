@@ -18,7 +18,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true  // Ajouter cette ligne pour activer le support des décorateurs
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
