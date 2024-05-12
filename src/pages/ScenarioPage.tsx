@@ -4,13 +4,14 @@ import { useLocation } from 'react-router-dom';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import Tab1Component from '../tabs/Tab1Component_stats';
 import Tab2Component from '../tabs/Tab2Component';
+import { FileData } from '../hooks/useFileHandler';
 
 const ScenarioPage: React.FC = () => {
   const location = useLocation();
-  const [fileData,setFileData] = useState(location.state?.fileData as Uint8Array | null);
+  const [fileData,setFileData] = useState(location.state?.fileData as FileData | null);
 
   useEffect(() => {
-    const data = location.state?.fileData as Uint8Array | null;
+    const data = location.state?.fileData as FileData | null;
     if (data) {
       setFileData(data);
     }
