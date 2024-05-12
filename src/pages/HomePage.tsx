@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Center, Text } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   const [fileData, setFileData] = useState<Uint8Array | null>(null);
+  const location = useLocation();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Vérifie si l'URL est la racine et réinitialise fileData
+    if (location.pathname === '/') {
+      console.log("Retour demandé");
+      setFileData(null);
+    }
+  }, [location]);
+
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    console.log("@@@ DROP @@@@")
     event.preventDefault();
+    event.stopPropagation()
     const file = event.dataTransfer.files[0];
-    // Exemple de validation de fichier
+
     if (checkFileValidity()) {
-    // if (file.type === 'application/pdf' && checkFileValidity(file)) {
+      // if (file.type === 'application/pdf' && checkFileValidity(file)) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const arrayBuffer = e.target?.result as ArrayBuffer;
@@ -24,17 +35,15 @@ const HomePage: React.FC = () => {
   };
 
   const checkFileValidity = (): boolean => {
-  //const checkFileValidity = (file: File): boolean => {
-    // Fonction de validation du fichier
-    // Vous pouvez implémenter votre logique de validation ici
     return true;
   };
 
   useEffect(() => {
     if (fileData) {
+      console.log("@@@ Navigate @@@")
       navigateToScenarioPage();
     }
-  }, [fileData, navigate]);
+  }, [fileData]);
 
   const navigateToScenarioPage = () => {
     navigate('/scenario', { state: { fileData } });
@@ -42,10 +51,11 @@ const HomePage: React.FC = () => {
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation()
   };
 
   return (
-    <Box id="homepage" h="100%" w="100%" bg="gray.100"  onDrop={handleDrop} onDragOver={handleDragOver}>
+    <Box id="homepage" h="100%" w="100%" bg="gray.100" onDrop={handleDrop} onDragOver={handleDragOver}>
       <Center h="100%">
         <Text fontSize="xl">Glissez-déposez votre fichier ici</Text>
       </Center>

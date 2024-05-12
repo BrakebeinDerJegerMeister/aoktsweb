@@ -1,5 +1,5 @@
 // ScenarioPage.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import Tab1Component from '../tabs/Tab1Component_stats';
@@ -7,9 +7,15 @@ import Tab2Component from '../tabs/Tab2Component';
 
 const ScenarioPage: React.FC = () => {
   const location = useLocation();
-  const [fileData,] = useState(location.state?.fileData as Uint8Array | null);
+  const [fileData,setFileData] = useState(location.state?.fileData as Uint8Array | null);
 
-
+  useEffect(() => {
+    const data = location.state?.fileData as Uint8Array | null;
+    if (data) {
+      setFileData(data);
+    }
+  }, [location.state]);
+  
   return (
     <div>
       <Tabs defaultIndex={0} variant="enclosed" colorScheme="green">
