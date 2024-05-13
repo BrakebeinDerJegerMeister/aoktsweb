@@ -1,133 +1,188 @@
 
-type bufferReader = {
-    dataView: DataView;
-    index: number;
-}
 
 abstract class SType {
     constructor() {
 
     }
-    setValue() {
-        this._setValue();
+    setValue(value: string | number) {
+        this._setValue(value);
     }
-    geyValue() {
-        this._getValue();
+    getValue(): Uint8Array | string | number | any {
+        return this._getValue();
     }
-    read(reader: any) {
-        this._read(reader);
-    }
-    write(writer: any) {
-        this._write(writer);
-    }
-    protected abstract _read(reader: any): void;
-    protected abstract _write(writer: any): void;
-    protected abstract _setValue(): void;
-    protected abstract _getValue(): void;
+
+    protected abstract _setValue(value: Uint8Array | string | number | null | any): void;
+    protected abstract _getValue(): Uint8Array | string | number | any;
 
 }
 
 
-class U16 { }
+class U16 extends SType {
+    value: number | null;
+    constructor() {
+        super();
+        this.value = null;
+    }
+    protected _setValue(value: number): void { this.value = value; }
+    protected _getValue(): number { return this.value as number; }
+}
+
 class U32 extends SType {
     value: number | null;
     constructor() {
         super();
         this.value = null;
     }
-    protected _read(reader: bufferReader): void {
-        console.log("YEAH")
-        let myDataView = reader.dataView;
-        this.value = myDataView.getUint32(reader.index, true);
-        reader.index += 4;
-
-    }
-    protected _write(writer: any): void { }
-    protected _setValue(): void { }
-    protected _getValue(): void { }
+    protected _setValue(value: number): void { this.value = value; }
+    protected _getValue(): number { return this.value as number; }
 }
-class Ascii { }
+
+class Ascii extends SType {
+    value: string | null;
+    len: number | Function;
+    constructor(len: number | Function) {
+        super();
+        this.value = null;
+        this.len = len;
+    }
+    getLen() { return typeof this.len == "function" ? this.len() : this.len; }
+    protected _setValue(value: string): void { this.value = value; }
+    protected _getValue(): string { return this.value as string; }
+}
+
 class Str extends SType {
+    value: string | null;
+    len: U32 | U16;
     constructor(len: U32 | U16) {
         super();
-        if (true) {
-
-        }
+        this.value = null;
+        this.len = len;
+        //console.log("@@len", len)
     }
-    protected _read(reader: any): void { }
-    protected _write(writer: any): void { }
-    protected _setValue(): void { }
-    protected _getValue(): void { }
+    getLen(): U32 | U16 { return this.len; }
+    protected _setValue(value: string): void { this.value = value; }
+    protected _getValue(): string { return this.value as string; }
 }
-class ArrayData { }
-class Section { }
 
-function u32() {
-    function _read(reader: bufferReader): void {
-        console.log("YEAH")
-        let myDataView = reader.dataView;
-        let value = myDataView.getUint32(reader.index, true);
-        reader.index += 4;
-        console.log(value)
+class ArrayData extends SType {
+    value: Uint8Array | null;
+    len: number | Function | null;
+    constructor(len: number | Function) {
+        super();
+        this.value = null;
+        this.len = len;
     }
-
-
-    return { "type": U32, "value": undefined, "read": _read };
+    getLen() { return typeof this.len == "function" ? this.len() : this.len; }
+    protected _setValue(value: Uint8Array): void { this.value = value; }
+    protected _getValue(): Uint8Array { return this.value as Uint8Array; }
 }
 
-function ascii(len: number | Function) {
-    console.log(len);
-    return new Ascii();
+
+class Section extends SType {
+    value: any;
+    sectionName: any;
+    constructor(sectionName: any) {
+        super();
+        this.value = new Map();
+        this.sectionName = sectionName;
+    }
+    createSection() { this.sectionName(this.value); }
+    protected _setValue(value: any): void { this.value = value; }
+    protected _getValue(): any { return this.value as any; }
 }
 
-function str(len: any) {
-    console.log(len);
+function u32(): SType {
+    return new U32();
+}
+
+function ascii(len: number | Function): SType {
+    return new Ascii(len);
+}
+
+function str(len: any): SType {
     return new Str(len);
 }
 
 function arrayData(len: number | Function) {
-    console.log(len);
-    return new ArrayData();
+    return new ArrayData(len);
 }
 
 function section(sectionName: Function) {
-    console.log(sectionName);
-    let mySection = new Map();
-    sectionName(mySection);
-    return { "type": Section, "value": mySection };
+    return new Section(sectionName);
 }
 
 export function readScenario(myUint8Array: Uint8Array) {
-    let myBufferReader: bufferReader = {
+    let myBufferReader: STypeRW = {
         "index": 0,
         "dataView": new DataView(myUint8Array.buffer)
     }
-    let scenario = processScenario();
+    let scenario = new Map();
+    processScenario(scenario);
+
 
     function processMe(me: IterableIterator<any>) {
-        for (let entry of me) {
-            console.log(entry[0], entry[1]);
-            /*if (entry[1].type && entry[1].type == Section) {
-                //console.log("@@@ Section @@@");
-                processMe(entry[1].value.entries());
-            } */
-            switch (entry[1].type) {
-                case Section: processMe(entry[1].value.entries()); break;
+        for (let [elementName, obj] of me) {
+            //console.log(elementName, obj);
+            switch (true) {
+                case obj instanceof Section:
+                    console.log("@@@ Section @@@");
+                    obj.createSection();
+                    processMe(obj.getValue().entries());
+                    break;
                 default:
-                    console.log("Read :");
-                    entry[1].read && entry[1].read(myBufferReader);
+                    readElement(obj, myBufferReader)
+                    console.log(obj.getValue());
             }
         }
     }
 
     processMe(scenario.entries());
 
+    console.log(scenario);
+
 }
 
-function processScenario() {
-    let o = new Map();
+type STypeRW = {
+    dataView: DataView;
+    index: number;
+}
+
+
+function readElement(e: SType, reader: STypeRW) {
+    switch (true) {
+        case e instanceof U32:
+            let value = reader.dataView.getUint32(reader.index, true);
+            reader.index += 4;
+            e.setValue(value);
+            break;
+        case e instanceof Ascii:
+            let alen = e.getLen();
+            let asciiBuffer = new Uint8Array(reader.dataView.buffer, reader.index, alen);
+            const asciiDecoder = new TextDecoder();
+            reader.index += alen;
+            e.setValue(asciiDecoder.decode(asciiBuffer));
+            break;
+        case e instanceof Str:
+            let eLen = e.getLen();
+            readElement(eLen, reader);
+            let sLen = eLen.getValue();
+            console.log(sLen);
+            let strBuffer = new Uint8Array(reader.dataView.buffer, reader.index, sLen);
+            const strDecoder = new TextDecoder();
+            reader.index += sLen;
+            e.setValue(strDecoder.decode(strBuffer));
+            break;
+        case e instanceof Section:
+            //e.createSection();
+            break;
+    }
+}
+/*function writeElement(e) {
+
+}*/
+
+function processScenario(o: Map<string, any>) {
     o.set("mainHeader", section(processMainHeader));
-    return o;
 }
 
 function processMainHeader(o: Map<string, any>) {
