@@ -106,7 +106,8 @@ class Str extends SString {
     }
     getLen(): U32 | U16 { return this.len; }
     readData(reader: STypeRW) {
-        let eLen = this.getLen();
+        //console.log(this.getLen());
+        let eLen = this.getLen()();
         eLen.readData(reader);
         let sLen = eLen.getValue();
         let strBuffer = new Uint8Array(reader.dataView.buffer, reader.index, sLen);
@@ -176,7 +177,7 @@ class Section extends SType {
     protected _getValue(): any { return this.value as any; }
 }
 
-class Scenario extends SType {
+class Scenario extends Map {
     value: Map<string, any>;
     constructor() {
         super();
@@ -220,7 +221,7 @@ class Scenario extends SType {
     }
     [Symbol.toStringTag]: string = 'Scenario';
     [Symbol.iterator](): IterableIterator<[string, any]> {
-        return this.map[Symbol.iterator]();
+        return this.value[Symbol.iterator]();
     }
     [key: string]: any | any;
     set(key: string, value: any): this {
@@ -236,6 +237,7 @@ class Scenario extends SType {
     protected _setValue(value: any): void { this.value = value; }
     protected _getValue(): any { return this.value as any; }
 }
+
 
 class ArrayOf<T> extends SType {
     value: Array<T> = [];
@@ -290,16 +292,26 @@ class ArrayOf<T> extends SType {
         });
     }
     [Symbol.iterator](): IterableIterator<T> { return this.value[Symbol.iterator](); }
-    getCount(): number { return typeof this.count == "function" ? this.count() : this.count; }
+    getCount(): number {
+        let obCount = this.count()();
+        console.log("Couuuuunt", obCount.getValue())
+        return typeof this.count == "function" ? this.count() : this.count;
+    }
     get [Symbol.toStringTag](): string { return 'ArrayOf'; }
 
     protected _setValue(value: any): void { throw new Error('Method not implemented.'); }
     protected _getValue() { throw new Error('Method not implemented.'); }
-    readData(reader: STypeRW) {
-        /*let len: number = typeof this.count == "function" ? this.count() : this.count;
-        for(let i=0; i<len; i++) {
+    readData(reader: STypeRW, processEntryCallback: Function) {
+        console.log("@ArrayOf : count", this.count())
+        let len: number = this.count().getValue();
+        for (let i = 0; i < len; i++) {
+            let myObjToPush = this.ofType();
+            console.log("@ArrayOf : myObjToPush", myObjToPush)
+            this.value.push(myObjToPush);
+            processEntryCallback(null, null, myObjToPush);
+            console.log(myObjToPush);
 
-        }*/
+        }
     }
 
     // Méthodes pour manipuler le tableau
@@ -313,32 +325,32 @@ class ArrayOf<T> extends SType {
 }
 
 // Factories
-function u32(): SType {
-    return new U32();
+function u32(): Function {
+    return function () { return new U32(); };
 }
 
-function f32(): SType {
-    return new F32();
+function f32(): Function {
+    return function () { return new F32(); };
 }
 
-function ascii(len: number | Function): SType {
-    return new Ascii(len);
+function ascii(len: number | Function): Function {
+    return function () { return new Ascii(len); };
 }
 
-function str(len: any): SType {
-    return new Str(len);
+function str(len: any): Function {
+    return function () { return new Str(len); };
 }
 
-function arrayOf(ofType: any, count: number | Function): SType {
-    return new ArrayOf<typeof ofType>(ofType, count);
+function arrayOf(ofType: any, count: number | Function): Function {
+    return function () { return new ArrayOf<typeof ofType>(ofType, count); };
 }
 
-function arrayData(len: number | Function) {
-    return new ArrayData(len);
+function arrayData(len: number | Function): Function {
+    return function () { return new ArrayData(len); };
 }
 
-function section(sectionName: Function) {
-    return new Section(sectionName);
+function section(sectionName: Function): Function {
+    return function () { return new Section(sectionName); };
 }
 
 export function readScenario(myUint8Array: Uint8Array) {
@@ -349,32 +361,47 @@ export function readScenario(myUint8Array: Uint8Array) {
     p_Scenario(scenario);
 
 
-    function processMe(me: IterableIterator<any>) {
-        for (let [key, obj] of me) {
+
+    function processEntry(me, key: string, obj: any) {
+        console.log(obj);
+
+        if (obj instanceof SType) {
+            obj.readData(currentRW)
+            return obj;
+        } else if (obj instanceof Function) {
+            let myObj = obj();
             switch (true) {
-                case obj instanceof ArrayOf:
-                    console.log(obj.getCount());
-                    for (let i = 0; i < obj.getCount(); i++) {
-                        //obj.readData(currentRW)
-                        //obj.push()
-                    }
+                case myObj instanceof ArrayOf:
+                    // console.log(myObj.getCount());
+                    myObj.readData(currentRW, processEntry);
+                    //for (let i = 0; i < myObj.getCount(); i++) {
+                    //    console.log("Houba");
+                    //myObj.readData(currentRW)
+                    //myObj.push()
+                    //}
                     break;
-                case obj instanceof Section:
+                case myObj instanceof Section:
                     console.log("@@@ Section @@@");
-                    obj.createSection();
-                    processMe(obj.getValue().entries());
+                    myObj.createSection();
+                    processMe(myObj.getValue());
                     break;
-                case key == "useMainDataView":
+                default:
+                    myObj.readData(currentRW)
+            }
+            return myObj;
+        } else {
+            switch (key) {
+                case "useMainDataView":
                     currentRW = {
                         "index": 0,
                         "dataView": new DataView(myUint8Array.buffer)
                     } as STypeRW;
                     break;
-                case key == "useScenarioDataView":
+                case "useScenarioDataView":
                     let decompressedData = null;
                     try {
                         // Décompression des données avec l'option raw
-                        decompressedData = pako.inflate(scenario["mainHeader"]["compressedData"], { raw: true });
+                        decompressedData = pako.inflate(scenario["mainHeader"]["compressedData"].getValue(), { raw: true });
 
                     } catch (err) {
                         console.error('Erreur lors de la décompression:', err);
@@ -386,15 +413,26 @@ export function readScenario(myUint8Array: Uint8Array) {
                         } as STypeRW;
                     }
                     break;
-                default:
-                    obj.readData(currentRW)
+            }
+        }
+
+    }
+
+    function processMe(me: IterableIterator<any>) {
+        // console.log("@ processMe : ", me.constructor)
+        // console.log("@ processMe : ", me instanceof Map)
+        // console.log("@ processMe : ", me)
+        if (me instanceof Map) {
+            for (let [key, obj] of me) {
+                let ret = processEntry(me, key, obj);
+                me.set(key, ret);
             }
         }
     }
 
-    processMe(scenario.entries());
-    console.log(scenario["mainHeader"]["compressedData"]);
-    console.log(scenario.mainHeader.compressedData);
+    processMe(scenario);
+    //console.log(scenario["mainHeader"]["compressedData"]);
+    //console.log(scenario.mainHeader.compressedData);
     //console.log(scenario["mainHeader"].get("compressedData"));
 
     return scenario;
@@ -425,7 +463,8 @@ function p_MainHeader(o: Map<string, any>) {
     o.set("value1000", u32());
     o.set("gameEdition", u32());
     o.set("usedSetsCount", u32());
-    o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount").getValue()));
+    console.log("@ p_MainHeader : usedSetsCount", o.get("usedSetsCount"))
+    o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
     o.set("compressedData", arrayData(Infinity));
 }
 
