@@ -3,21 +3,6 @@ export class Scenario extends Map {
     constructor() {
         super();
         this.value = new Map();
-        return new Proxy(this, {
-            get(target, prop, receiver) {
-                if (typeof prop === 'string' && target.value.has(prop as unknown as string)) {
-                    return target.value.get(prop as unknown as string);
-                }
-                return Reflect.get(target, prop, receiver);
-            },
-            set(target, prop, value, receiver) {
-                if (typeof prop === 'string') {
-                    target.value.set(prop as unknown as string, value);
-                    return true;
-                }
-                return Reflect.set(target, prop, value, receiver);
-            }
-        });
     }
     clear(): void {
         this.value.clear();
@@ -40,11 +25,6 @@ export class Scenario extends Map {
     values(): IterableIterator<any> {
         return this.value.values();
     }
-    [Symbol.toStringTag]: string = 'Scenario';
-    [Symbol.iterator](): IterableIterator<[string, any]> {
-        return this.value[Symbol.iterator]();
-    }
-    [key: string]: any | any;
     set(key: string, value: any): this {
         this.value.set(key, value);
         return this;
