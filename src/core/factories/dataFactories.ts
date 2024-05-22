@@ -30,6 +30,6 @@ export function arrayData(len: number | Function): Function {
     return function () { return new ArrayData(len); };
 }
 
-export function section(sectionName: Function): Function {
-    return function () { return new Section(sectionName); };
+export function section(sectionName: Function, ...args): Function {
+    return function () { return new Section(sectionName, ...args); };
 }

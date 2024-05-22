@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { FileData, FileInfo } from '../hooks/useFileHandler';
 import { readScenario } from '../core/io/readScenario';
+import Pako from 'pako';
 
 interface Props {
   fileData: FileData | null;
@@ -10,6 +11,22 @@ interface Props {
 const Tab1Component: React.FC<Props> = ({ fileData }) => {
   const [infos, setInfos] = useState<FileInfo | null>(null);
   const [myData, setMyData] = useState({});
+  const [dataToDownload, setDataToDownload] = useState<Uint8Array | null>(null);
+
+  const downloadData = () => {
+    if (dataToDownload) {
+      const decompressedData = Pako.inflate(dataToDownload, { raw: true });
+      const blob = new Blob([decompressedData], { type: "application/octet-stream" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "monFichier.dat";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
 
   useEffect(() => {
     if (!fileData) return;
@@ -21,13 +38,16 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
       "fileSize": fileData.fileSize,
       "fileType": fileData.fileType,
     });
-    setMyData({
+    let data = {
       "version": decoder.decode(versionBuffer),
       "length": myDataView.getInt32(4, true),
       "headerType": myDataView.getInt32(8, true)
-    });
-    let scenario = readScenario(fileData.arrayBuffer);
-    console.log(scenario);
+    };
+    console.clear();
+    setMyData(data);
+    let scenario = readScenario(fileData.arrayBuffer, data);
+    let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
+    setDataToDownload(compressedData);
 
   }, [fileData]);
 
@@ -47,6 +67,9 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
           ))
         }
       </div>
+      {dataToDownload && (
+        <button onClick={downloadData}>Download Data</button>
+      )}
     </div>
   );
 };

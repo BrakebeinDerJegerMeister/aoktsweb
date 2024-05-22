@@ -1,11 +1,11 @@
-import { Scenario } from '../types/Scenario';
+
 import { p_Scenario } from '../structs/p_Scenario';
 import { SType } from '../types/SType';
 import { Section } from '../types/Section';
 import { ArrayOf } from '../types/ArrayOf';
 import Pako from 'pako';
 
-export function readScenario(myUint8Array: Uint8Array) {
+export function readScenario(myUint8Array: Uint8Array, myData) {
     console.log("@@@ READ Scenario @@@")
 
     let currentRW: STypeRW = {} as STypeRW;
@@ -13,7 +13,7 @@ export function readScenario(myUint8Array: Uint8Array) {
     //let scenario = new Scenario();
     //let scenario = {};
 
-    p_Scenario(scenario);
+    p_Scenario(scenario, myData);
 
 
 
@@ -94,22 +94,46 @@ export function readScenario(myUint8Array: Uint8Array) {
 
     processMe(scenario);
     //console.log(scenario["mainHeader"]["compressedData"]);
-    console.log("@@@ Scenario :", scenario)
-    let floatNumber = scenario.get("scenarioHeader").get("version");
-    let targetNumber = 1.26;
-    let epsilon = Number.EPSILON; // Epsilon du système
-    
-    if (Math.abs(floatNumber - targetNumber) < epsilon) {
-        console.log(floatNumber);
-        console.log(epsilon);
-        console.log("Le nombre est proche de 1.26");
-    } else {
-        console.log(floatNumber);
-        console.log(epsilon);
-        console.log(Number.EPSILON * Math.max(1, Math.abs(floatNumber), Math.abs(targetNumber)));
-        console.log("Le nombre n'est pas proche de 1.26");
-    }
 
+
+    function roundFloat(value, precision) {
+        const factor = Math.pow(10, precision);
+        return Math.round(value * factor) / factor;
+    }
+    
+    function isCloseEnough(a, b, epsilon = Number.EPSILON) {
+        return Math.abs(a - b) < epsilon;
+    }
+    
+    function discoverSignificantDigits(value, maxPrecision = 16, epsilon = Number.EPSILON) {
+        let previousRoundedValue = roundFloat(value, 0);
+        for (let precision = 1; precision <= maxPrecision; precision++) {
+            const roundedValue = roundFloat(value, precision);
+            if (isCloseEnough(roundedValue, previousRoundedValue, epsilon)) {
+                return precision;
+            }
+            previousRoundedValue = roundedValue;
+        }
+        return maxPrecision;
+    }
+    
+    function discoverVersion(value, epsilon = Number.EPSILON) {
+        const significantDigits = discoverSignificantDigits(value, 10, epsilon);
+        const roundedValue = roundFloat(value, significantDigits);
+        return roundedValue.toFixed(significantDigits);
+    }
+    
+    // La valeur float à analyser
+    const value = scenario.get("scenarioHeader").get("version").value;
+    
+    // Découvrir le nombre de chiffres significatifs
+    const significantDigits = discoverSignificantDigits(value);
+    console.log("Nombre de chiffres significatifs :", significantDigits);
+    
+    // Découvrir la version probable
+    const discoveredVersion = discoverVersion(value);
+    console.log("La version découverte est :", discoveredVersion);
+    console.log(discoveredVersion);
 
     return scenario;
 }

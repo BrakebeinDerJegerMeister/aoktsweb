@@ -2,11 +2,14 @@ import { SType } from "./SType";
 
 export class Section extends SType {
     private _myMap: Map<string, any>;
+    private _myArgs;
     sectionName: any;
-    constructor(sectionName: any) {
+    constructor(sectionName: any, ...args) {
         super();
         this._myMap = new Map();
         this.sectionName = sectionName;
+        console.log(args);
+        this._myArgs = args;
     }
     // Itérateur
     [Symbol.iterator](): IterableIterator<[string, any]> {
@@ -14,7 +17,7 @@ export class Section extends SType {
     }
     // Définir une signature d'index pour permettre l'accès par clé
     [key: string]: any | any;
-    createSection() { this.sectionName(this._myMap); }
+    createSection() { this.sectionName(this._myMap, ...this._myArgs); }
     protected _setValue(value: any): void { this._myMap = value; }
     protected _getValue(): any { return this._myMap as any; }
     public get(propertyName : string) { return this._myMap.get(propertyName); }
