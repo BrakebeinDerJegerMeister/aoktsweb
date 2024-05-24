@@ -1,6 +1,5 @@
 
 import { p_Scenario } from '../structs/p_Scenario';
-import { SType } from '../types/SType';
 import { Section } from '../types/Section';
 import { ArrayOf } from '../types/ArrayOf';
 import Pako from 'pako';
@@ -18,22 +17,12 @@ export function readScenario(myUint8Array: Uint8Array, myData) {
 
 
     function processEntry(me, key: string, obj: any) {
-        console.log(obj);
 
-        if (obj instanceof SType) {
-            obj.readData(currentRW)
-            return obj;
-        } else if (obj instanceof Function) {
+        if (obj instanceof Function) {
             let myObj = obj();
             switch (true) {
                 case myObj instanceof ArrayOf:
-                    // console.log(myObj.getCount());
-                    myObj.readData(currentRW, processEntry);
-                    //for (let i = 0; i < myObj.getCount(); i++) {
-                    //    console.log("Houba");
-                    //myObj.readData(currentRW)
-                    //myObj.push()
-                    //}
+                    myObj.readData(currentRW, key, processEntry);
                     break;
                 case myObj instanceof Section:
                     console.log("@@@ Section @@@");
@@ -41,7 +30,7 @@ export function readScenario(myUint8Array: Uint8Array, myData) {
                     processMe(myObj.getValue());
                     break;
                 default:
-                    myObj.readData(currentRW)
+                    myObj.readData(currentRW, key)
             }
             return myObj;
         } else {

@@ -12,7 +12,7 @@ export class Str extends SString {
         //console.log("@@len", len)
     }
     getLen(): U32 | U16 { return this.len; }
-    readData(reader: STypeRW) {
+    readData(reader: STypeRW, key: string) {
         //console.log(this.getLen());
         let eLen = this.getLen()();
         eLen.readData(reader);
@@ -21,6 +21,7 @@ export class Str extends SString {
         const strDecoder = new TextDecoder();
         reader.index += sLen;
         this.setValue(strDecoder.decode(strBuffer));
+        console.log(key +" :\n", this.value);
     }
     writeData() { }
 }

@@ -41,12 +41,26 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
     let data = {
       "version": decoder.decode(versionBuffer),
       "length": myDataView.getInt32(4, true),
-      "headerType": myDataView.getInt32(8, true)
+      "headerType": myDataView.getInt32(8, true),
     };
     console.clear();
-    setMyData(data);
     let scenario = readScenario(fileData.arrayBuffer, data);
     let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
+    // let pdata1 = scenario.get("scenarioHeader").get("playerData1").getValue();
+    // pdata1.forEach(function(e){
+    //   console.log(e.get(""))
+    // });
+    data = {
+      ...data, ...{
+        "version 2": scenario.get("scenarioHeader").get("version").getValue(),
+        /*"conquestMode": scenario.get("scenarioHeader").get("conquestMode").getValue(),
+        "missionItemsCounter": scenario.get("scenarioHeader").get("missionItemsCounter").getValue(),
+        "missionAvailable": scenario.get("scenarioHeader").get("missionAvailable").getValue(),
+        "missionTimeline": scenario.get("scenarioHeader").get("missionTimeline").getValue(),
+        "originalFilename": scenario.get("scenarioHeader").get("originalFilename").getValue(),*/
+      }
+    }
+    setMyData(data);
     setDataToDownload(compressedData);
 
   }, [fileData]);

@@ -62,15 +62,19 @@ export class ArrayOf<T> extends SType {
 
     protected _setValue(value: any): void { throw new Error('Method not implemented.'); }
     protected _getValue() { throw new Error('Method not implemented.'); }
-    readData(reader: STypeRW, processEntryCallback: Function) {
-        console.log("@ArrayOf : count", this.count())
-        let len: number = this.count().getValue();
+
+    readData(reader: STypeRW, key: string, processEntryCallback: Function) {
+        //console.log(key);
+        //console.log("@ArrayOf : count", this.count)
+        let len: number = typeof this.count == "number" ? this.count : this.count().getValue();
+        console.log("Array ("+len+") :", key)
         for (let i = 0; i < len; i++) {
-            let myObjToPush = this.ofType();
-            console.log("@ArrayOf : myObjToPush", myObjToPush)
+            let myObjToPush = this.ofType;
+            //console.log("@ArrayOf : myObjToPush", myObjToPush)
             this.value.push(myObjToPush);
-            processEntryCallback(null, null, myObjToPush);
-            console.log(myObjToPush);
+            console.log(key+"_"+i, myObjToPush);
+            processEntryCallback(null, key, myObjToPush);
+            //console.log(myObjToPush);
 
         }
     }

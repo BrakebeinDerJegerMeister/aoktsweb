@@ -9,12 +9,13 @@ export class Ascii extends SString {
         this.len = len;
     }
     getLen() { return typeof this.len == "function" ? this.len() : this.len; }
-    readData(reader: STypeRW) {
+    readData(reader: STypeRW, key: string) {
         let alen = this.getLen();
         let asciiBuffer = new Uint8Array(reader.dataView.buffer, reader.index, alen);
         const asciiDecoder = new TextDecoder();
         reader.index += alen;
         this.setValue(asciiDecoder.decode(asciiBuffer));
+        console.log(key, ":", this.value);
     }
     writeData() { }
 }

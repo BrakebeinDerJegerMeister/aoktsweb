@@ -8,7 +8,7 @@ export class Section extends SType {
         super();
         this._myMap = new Map();
         this.sectionName = sectionName;
-        console.log(args);
+        //console.log(args);
         this._myArgs = args;
     }
     // Itérateur
@@ -17,7 +17,10 @@ export class Section extends SType {
     }
     // Définir une signature d'index pour permettre l'accès par clé
     [key: string]: any | any;
-    createSection() { this.sectionName(this._myMap, ...this._myArgs); }
+    createSection() { 
+        console.log("Section :", this.sectionName.name);
+        this.sectionName(this._myMap, ...this._myArgs); 
+    }
     protected _setValue(value: any): void { this._myMap = value; }
     protected _getValue(): any { return this._myMap as any; }
     public get(propertyName : string) { return this._myMap.get(propertyName); }

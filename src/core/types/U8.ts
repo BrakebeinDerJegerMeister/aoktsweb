@@ -1,7 +1,7 @@
 import { SNumber } from "./SNumber";
 
-export class U16 extends SNumber {
-    nbBytes = 2;
+export class U8 extends SNumber {
+    nbBytes = 1;
     constructor() {
         super();
     }

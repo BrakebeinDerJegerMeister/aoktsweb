@@ -4,10 +4,20 @@ import { Ascii } from "../types/Ascii";
 import { F32 } from "../types/F32";
 import { Section } from "../types/Section";
 import { Str } from "../types/Str";
+import { U16 } from "../types/U16";
 import { U32 } from "../types/U32";
+import { U8 } from "../types/U8";
 
 export function u32(): Function {
     return function () { return new U32(); };
+}
+
+export function u16(): Function {
+    return function () { return new U16(); };
+}
+
+export function u8(): Function {
+    return function () { return new U8(); };
 }
 
 export function f32(): Function {

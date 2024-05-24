@@ -5,10 +5,11 @@ export class U32 extends SNumber {
     constructor() {
         super();
     }
-    readData(reader: STypeRW) {
+    readData(reader: STypeRW, key: string) {
         let value = reader.dataView.getUint32(reader.index, true);
         reader.index += this.nbBytes;
         this.setValue(value);
+        console.log(key +" :\n", this.value);
     }
     writeData() { }
 }
