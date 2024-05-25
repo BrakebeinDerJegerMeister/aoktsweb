@@ -4,6 +4,32 @@ import { Section } from '../types/Section';
 import { ArrayOf } from '../types/ArrayOf';
 import Pako from 'pako';
 import { getRoundedVersion } from '../utils/getRoundedVersion';
+import { FileData } from '../../hooks/useFileHandler';
+import { ExtensionError } from '../types/errors/extensionError';
+
+export function fastReadScenario(fileData: FileData, myData: any) {
+
+
+        let fileName:string = fileData.fileName;
+        let extension:string = fileName.includes(".") ? fileName.split(".").pop() || "" : "";
+        const knownExtensions = ["scn", "scx", "scx2", "aoe2scenario"];
+        if (!knownExtensions.includes(extension)) {
+            throw new ExtensionError("Extension non prise en charge");
+        }
+
+
+
+    let myMainUint8Array = fileData.arrayBuffer;
+
+    let myDataView = new DataView(myMainUint8Array.buffer);
+    let versionBuffer = new Uint8Array(myMainUint8Array.buffer, 0, 4);
+    const decoder = new TextDecoder();
+
+    let version = decoder.decode(versionBuffer);
+    let headerType = myDataView.getUint32(8, true);
+
+}
+
 
 export function readScenario(myUint8Array: Uint8Array, myData: any) {
     console.log("@@@ READ Scenario @@@")
@@ -35,13 +61,13 @@ export function readScenario(myUint8Array: Uint8Array, myData: any) {
                 obj.mainRW = currentRW;
                 break;
 
-            case "useScenarioDataView":;
+            case "useScenarioDataView": ;
                 let decompressedData: ArrayBufferLike | null = null;
                 try {
                     decompressedData = Pako.inflate(scenario.get("mainHeader").get("compressedData").getValue(), { raw: true });
                     if (decompressedData) {
                         currentRW = {
-                            "name": "scenarioDataView", 
+                            "name": "scenarioDataView",
                             "index": 0,
                             "dataView": new DataView(decompressedData.buffer)
                         } as STypeRW;

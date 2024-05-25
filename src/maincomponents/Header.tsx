@@ -3,6 +3,8 @@ import React from 'react';
 import { Flex, Heading } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useFileHandler } from '../hooks/useFileHandler';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
 
@@ -13,12 +15,14 @@ const Header: React.FC = () => {
         // Navigate with empty state to ensure no data persists
         navigate('/', { state: {} });
     };
+    const { t } = useTranslation();
 
     return (
         <Flex align="center" justify="center" bg="blue.500" color="white" p={4} onClick={handleHeaderClick} onDrop={handleDrop} onDragOver={handleDragOver}>
             <Heading as="h1" size="lg">
-                Mon super header
+                {t('headerTxt')}
             </Heading>
+            <LanguageSwitcher ml="auto" />
         </Flex>
     );
 };
