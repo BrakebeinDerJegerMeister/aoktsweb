@@ -46,10 +46,6 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
     console.clear();
     let scenario = readScenario(fileData.arrayBuffer, data);
     let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
-    // let pdata1 = scenario.get("scenarioHeader").get("playerData1").getValue();
-    // pdata1.forEach(function(e){
-    //   console.log(e.get(""))
-    // });
     data = {
       ...data, ...{
         "version 2": scenario.get("scenarioHeader").get("version").getValue(),

@@ -8,6 +8,10 @@ import { U16 } from "../types/U16";
 import { U32 } from "../types/U32";
 import { U8 } from "../types/U8";
 
+
+
+
+
 export function u32(): Function {
     return function () { return new U32(); };
 }
@@ -40,6 +44,6 @@ export function arrayData(len: number | Function): Function {
     return function () { return new ArrayData(len); };
 }
 
-export function section(sectionName: Function, ...args): Function {
+export function section(sectionName: Function, ...args: any): Function {
     return function () { return new Section(sectionName, ...args); };
 }

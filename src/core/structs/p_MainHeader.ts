@@ -1,16 +1,17 @@
 import { arrayData, arrayOf, ascii, str, u32 } from "../factories/dataFactories";
 
-export function p_MainHeader(o: Map<string, any>, myData: object) {
+export function p_MainHeader(o: Map<string, any>, myData: any) {
   console.log(myData)
-  switch(myData.headerType) {
-    case 2: return p_MainHeader_v2(o);
-    case 3: return p_MainHeader_v3(o);
-    case 5: return p_MainHeader_v5(o);
-    case 6: return p_MainHeader_v6(o);
+
+  switch (myData.headerType) {
+    case 2: p_MainHeader_v2(o, myData); break;
+    case 3: p_MainHeader_v3(o, myData); break;
+    case 5: p_MainHeader_v5(o, myData); break;
+    case 6: p_MainHeader_v6(o, myData); break;
   }
 }
 
-function p_MainHeader_v2(o: Map<string, any>) {
+function p_MainHeader_v2(o: Map<string, any>, myData: any) {
   console.log("@@@ using p_MainHeader_v2 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -22,7 +23,7 @@ function p_MainHeader_v2(o: Map<string, any>) {
   o.set("compressedData", arrayData(Infinity));
 }
 
-function p_MainHeader_v3(o: Map<string, any>) {
+function p_MainHeader_v3(o: Map<string, any>, myData: any) {
   console.log("@@@ using p_MainHeader_v3 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -39,7 +40,7 @@ function p_MainHeader_v3(o: Map<string, any>) {
   o.set("compressedData", arrayData(Infinity));
 }
 
-function p_MainHeader_v5(o: Map<string, any>) {
+function p_MainHeader_v5(o: Map<string, any>, myData: any) {
   console.log("@@@ using p_MainHeader_v5 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -58,7 +59,7 @@ function p_MainHeader_v5(o: Map<string, any>) {
   o.set("compressedData", arrayData(Infinity));
 }
 
-function p_MainHeader_v6(o: Map<string, any>) {
+function p_MainHeader_v6(o: Map<string, any>, myData: any) {
   console.log("@@@ using p_MainHeader_v6 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
