@@ -25,7 +25,7 @@ i18n
     fallbackLng: 'en',
     ns: ['translation', 'header'],
     detection: {
-      order: ['queryString', 'cookie'],
+      order: ['queryString', 'cookie', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
       caches: ['cookie']
     },
     interpolation: {
