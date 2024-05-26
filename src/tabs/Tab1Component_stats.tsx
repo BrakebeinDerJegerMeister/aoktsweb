@@ -1,26 +1,23 @@
 // Tab1Component.tsx
 import React, { useEffect, useState } from 'react';
-import { FileData, FileInfo } from '../hooks/useFileHandler';
-import { fastReadScenario, readScenario } from '../core/io/readScenario';
-import Pako from 'pako';
+import { GameData } from '@root/core/io/GameData';
 
 interface Props {
-  fileData: FileData | null;
+  infos : any,
+  data : GameData
 }
 
-const Tab1Component: React.FC<Props> = ({ fileData }) => {
-  const [infos, setInfos] = useState<FileInfo | null>(null);
-  const [myData, setMyData] = useState({});
-  const [dataToDownload, setDataToDownload] = useState<Uint8Array | null>(null);
+const Tab1Component: React.FC<Props> = ({ infos, data }) => {
+
+  const [dataToDownload, setDataToDownload] = useState<Uint8Array>();
 
   const downloadData = () => {
     if (dataToDownload) {
-      const decompressedData = Pako.inflate(dataToDownload, { raw: true });
-      const blob = new Blob([decompressedData], { type: "application/octet-stream" });
+      const blob = new Blob([dataToDownload], { type: "application/octet-stream" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "monFichier.dat";
+      a.download = data.baseName + ".dat";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -29,26 +26,8 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
   };
 
   useEffect(() => {
-    if (!fileData) return;
-    try {
-    fastReadScenario(fileData, {});
-    } catch(erreur) {
-      console.log(erreur);
-    }
-
-    let myDataView = new DataView(fileData.arrayBuffer.buffer);
-    let versionBuffer = new Uint8Array(myDataView.buffer, 0, 4);
-    const decoder = new TextDecoder();
-    setInfos({
-      "fileName": fileData.fileName,
-      "fileSize": fileData.fileSize,
-      "fileType": fileData.fileType,
-    });
-    let data = {
-      "version": decoder.decode(versionBuffer),
-      "length": myDataView.getInt32(4, true),
-      "headerType": myDataView.getInt32(8, true),
-    };
+    if (!data) return;
+    console.log(data.scenario)
     //console.clear();
     /*let scenario = readScenario(fileData.arrayBuffer, data);
     let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
@@ -62,27 +41,29 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
         //"originalFilename": scenario.get("scenarioHeader").get("originalFilename").getValue(),
       }
     }
-    setMyData(data);
     setDataToDownload(compressedData);*/
-
-  }, [fileData]);
+    setDataToDownload(data.inflatedData)
+  }, [data]);
 
   return (
     <div>
       {
-        infos && <div>
-          <p>File name : {infos.fileName}</p>
-          <p>File size : {infos.fileSize}</p>
+        <div>
+          {
+            infos && Object.entries(infos).map(([key, value], i) => (
+              <p key={i}>{`${key} : ${value}`}</p>
+            ))
+          }
         </div>
       }
       <br />
-      <div>
+      {/* <div>
         {
           Object.entries(myData).map(([key, value], i) => (
             <p key={i}>{`${key} : ${value}`}</p>
           ))
         }
-      </div>
+      </div> */}
       {dataToDownload && (
         <button onClick={downloadData}>Download Data</button>
       )}

@@ -11,7 +11,7 @@ export class ArrayData extends SType<Uint8Array> {
     getLen() { return typeof this.len == "function" ? this.len() : this.len == Infinity ? undefined : this.len; }
     protected _setValue(value: Uint8Array): void { this.value = value; }
     protected _getValue(): Uint8Array { return this.value as Uint8Array; }
-    readData(reader: STypeRW, key: string) {
+    _readData(reader: STypeRW, key: string) {
         let dLen = this.getLen();
         let dataBuffer = new Uint8Array(reader.dataView.buffer, reader.index, dLen);
         this.setValue(dataBuffer);

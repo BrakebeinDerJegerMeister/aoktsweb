@@ -1,21 +1,23 @@
+
 import { SString } from "./SString";
-import { U16 } from "./U16";
-import { U32 } from "./U32";
+import { SType } from "./SType";
 
 export class Str extends SString {
+
     value: string | null;
-    len: U32 | U16;
-    constructor(len: U32 | U16) {
+    len: () => SType<number>;
+
+    constructor(len: () => SType<number>) {
         super();
         this.value = null;
         this.len = len;
-        //console.log("@@len", len)
     }
-    getLen(): U32 | U16 { return this.len; }
-    readData(reader: STypeRW, key: string) {
-        //console.log(this.getLen());
-        let eLen = this.getLen()();
-        eLen.readData(reader);
+
+    getLen(): SType<number> { return this.len(); }
+
+    _readData(reader: STypeRW, key: string) {
+        let eLen = this.getLen();
+        eLen.readData(reader, key + "_len");
         let sLen = eLen.getValue();
         let strBuffer = new Uint8Array(reader.dataView.buffer, reader.index, sLen);
         const strDecoder = new TextDecoder();
@@ -23,5 +25,6 @@ export class Str extends SString {
         this.setValue(strDecoder.decode(strBuffer));
         console.log(key +" :\n", this.value);
     }
+
     writeData() { }
 }

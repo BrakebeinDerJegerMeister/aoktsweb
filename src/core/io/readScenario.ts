@@ -13,10 +13,22 @@ import { HeaderVersionError } from '@errors/headerVersionError';
 import { HeaderTypeError } from '@errors/headerTypeError';
 import { InflateError } from '@errors/inflateError';
 import { ScenarioVersionError } from '@errors/scenarioVersionError';
+import { GameData } from './GameData';
 
-export function fastReadScenario(fileData: FileData, myData: any) {
+
+
+
+export function fastReadScenario(fileData: FileData, myData: GameData) {
+
     let fileName: string = fileData.fileName;
-    let extension: string = fileName.includes(".") ? fileName.split(".").pop() || "" : "";
+    let spFileName = fileName.split(".");
+    let extension: string = fileName.includes(".") ? spFileName.pop() || "" : "";
+    let baseName = spFileName.join(".");
+
+    myData.fileName = fileName;
+    myData.fileExtension = extension;
+    myData.baseName = baseName;
+
     const knownExtensions = ["scn", "scx", "scx2", "aoe2scenario"];
     if (!knownExtensions.includes(extension)) {
         throw new ExtensionError();
@@ -51,40 +63,47 @@ export function fastReadScenario(fileData: FileData, myData: any) {
     doReadProcess(myHeader, headerRW);
 
     let compressedData = myHeader.get('compressedData').getValue();
-    let decompressedData;
+    let inflatedData;
     try {
-        decompressedData = Pako.inflate(compressedData, { raw: true });
-        console.log(decompressedData);
+        inflatedData = Pako.inflate(compressedData, { raw: true });
+        console.log(inflatedData);
     }
     catch {
         throw new InflateError();
     }
-    let scenarioDataView = new DataView(decompressedData.buffer);
+    let scenarioDataView = new DataView(inflatedData.buffer);
     let version2: number = scenarioDataView.getFloat32(4, true)
     console.log(getRoundedVersion(version2));
     if (!((version2 >= 1) && (version2 <= 1.6))) {
         throw new ScenarioVersionError();
     }
+    myData.inflatedData = inflatedData;
     myData.version2 = version2;
     myData.header = myHeader;
     myData.scenarioDataView = scenarioDataView;
     myData.headerDataView = headerDataView;
 
-    /*
-    // Dans une autre fonction pour la lecture complète
+    return myHeader;
+}
+
+
+export function readScenario(_fileData: FileData, myData: GameData) {
     let myScenario = new Map();
     let scenarioRW = {
         "name": "mainDataView",
         "index": 0,
-        "dataView": myDataView
+        "dataView": myData.scenarioDataView
     } as STypeRW;
     p_Scenario(myScenario, myData);
-    doReadProcess(myScenario, scenarioRW);*/
+    doReadProcess(myScenario, scenarioRW);
+
+    myData.scenario = myScenario;
+    return myScenario;
 }
 
 function doReadProcess(me: Map<string, any>, currentRW: STypeRW) {
 
-    function processEntry(me: any, key: string, obj: any) {
+    function processEntry(_me: any, key: string, obj: any) {
         if (obj instanceof Function) {
             let myObj = obj();
             switch (true) {
