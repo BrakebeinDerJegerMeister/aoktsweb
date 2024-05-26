@@ -1,11 +1,35 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": [
+        "components/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
+      "@locales/*": [
+        "locales/*"
+      ],
+      "@errors/*": [
+        "errors/*"
+      ],
+      "@root/*": [
+        "*"
+      ],
+    },
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -13,14 +37,22 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
+    "types": [
+      "node"
+    ],
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "experimentalDecorators": true  // Ajouter cette ligne pour activer le support des décorateurs
+    "experimentalDecorators": true // Ajouter cette ligne pour activer le support des décorateurs
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

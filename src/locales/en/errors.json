@@ -1,0 +1,7 @@
+{
+    "extension": "Unknown extension",
+    "headerVersion" : "Unknown header version",
+    "headerType": "Unknown header type",
+    "inflateError" : "Error occurred while decompressing data",
+    "scenarioVersionError": "Unsupported scenario version"
+}

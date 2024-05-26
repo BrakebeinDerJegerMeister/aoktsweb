@@ -3,110 +3,110 @@ import { p_Scenario } from '../structs/p_Scenario';
 import { Section } from '../types/Section';
 import { ArrayOf } from '../types/ArrayOf';
 import Pako from 'pako';
+
 import { getRoundedVersion } from '../utils/getRoundedVersion';
-import { FileData } from '../../hooks/useFileHandler';
-import { ExtensionError } from '../types/errors/extensionError';
+import { FileData } from '@hooks/useFileHandler';
+import { MainHeaderMap, p_MainHeader } from '../structs/p_MainHeader';
+
+import { ExtensionError } from '@errors/extensionError';
+import { HeaderVersionError } from '@errors/headerVersionError';
+import { HeaderTypeError } from '@errors/headerTypeError';
+import { InflateError } from '@errors/inflateError';
+import { ScenarioVersionError } from '@errors/scenarioVersionError';
 
 export function fastReadScenario(fileData: FileData, myData: any) {
-
-
-        let fileName:string = fileData.fileName;
-        let extension:string = fileName.includes(".") ? fileName.split(".").pop() || "" : "";
-        const knownExtensions = ["scn", "scx", "scx2", "aoe2scenario"];
-        if (!knownExtensions.includes(extension)) {
-            throw new ExtensionError("Extension non prise en charge");
-        }
-
-
+    let fileName: string = fileData.fileName;
+    let extension: string = fileName.includes(".") ? fileName.split(".").pop() || "" : "";
+    const knownExtensions = ["scn", "scx", "scx2", "aoe2scenario"];
+    if (!knownExtensions.includes(extension)) {
+        throw new ExtensionError();
+    }
 
     let myMainUint8Array = fileData.arrayBuffer;
+    let headerDataView = new DataView(myMainUint8Array.buffer);
 
-    let myDataView = new DataView(myMainUint8Array.buffer);
     let versionBuffer = new Uint8Array(myMainUint8Array.buffer, 0, 4);
     const decoder = new TextDecoder();
 
-    let version = decoder.decode(versionBuffer);
-    let headerType = myDataView.getUint32(8, true);
+    let version = Number(decoder.decode(versionBuffer));
+    if (!((version >= 1) && (version <= 1.53))) {
+        throw new HeaderVersionError();
+    }
 
+    let headerType = Number(headerDataView.getUint32(8, true));
+    if (!((headerType >= 2) && (headerType <= 6))) {
+        throw new HeaderTypeError();
+    }
+
+    let myHeader: MainHeaderMap = new Map();
+    myData.version = version;
+    myData.headerType = headerType;
+    p_MainHeader(myHeader, myData);
+    let headerRW = {
+        "name": "mainDataView",
+        "index": 0,
+        "dataView": headerDataView
+    } as STypeRW;
+
+    doReadProcess(myHeader, headerRW);
+
+    let compressedData = myHeader.get('compressedData').getValue();
+    let decompressedData;
+    try {
+        decompressedData = Pako.inflate(compressedData, { raw: true });
+        console.log(decompressedData);
+    }
+    catch {
+        throw new InflateError();
+    }
+    let scenarioDataView = new DataView(decompressedData.buffer);
+    let version2: number = scenarioDataView.getFloat32(4, true)
+    console.log(getRoundedVersion(version2));
+    if (!((version2 >= 1) && (version2 <= 1.6))) {
+        throw new ScenarioVersionError();
+    }
+    myData.version2 = version2;
+    myData.header = myHeader;
+    myData.scenarioDataView = scenarioDataView;
+    myData.headerDataView = headerDataView;
+
+    /*
+    // Dans une autre fonction pour la lecture complète
+    let myScenario = new Map();
+    let scenarioRW = {
+        "name": "mainDataView",
+        "index": 0,
+        "dataView": myDataView
+    } as STypeRW;
+    p_Scenario(myScenario, myData);
+    doReadProcess(myScenario, scenarioRW);*/
 }
 
-
-export function readScenario(myUint8Array: Uint8Array, myData: any) {
-    console.log("@@@ READ Scenario @@@")
-
-    let currentRW: STypeRW = {} as STypeRW;
-    let scenario = new Map();
-    //let scenario = new Scenario();
-    //let scenario = {};
-
-    p_Scenario(scenario, myData);
-
-
+function doReadProcess(me: Map<string, any>, currentRW: STypeRW) {
 
     function processEntry(me: any, key: string, obj: any) {
+        if (obj instanceof Function) {
+            let myObj = obj();
+            switch (true) {
 
-        switch (key) {
+                case myObj instanceof ArrayOf:
+                    myObj.readData(currentRW, key, processEntry);
+                    break;
 
-            case "readFloatVersion":
-                //console.log(currentRW)
-                obj.version2 = getRoundedVersion(currentRW.dataView.getFloat32(4, true));
-                break;
+                case myObj instanceof Section:
+                    console.log("@@@ Section @@@");
+                    myObj.createSection();
+                    processMe(myObj.getValue());
+                    break;
 
-            case "useMainDataView":
-                currentRW = {
-                    "name": "mainDataView",
-                    "index": 0,
-                    "dataView": new DataView(myUint8Array.buffer)
-                } as STypeRW;
-                obj.mainRW = currentRW;
-                break;
-
-            case "useScenarioDataView": ;
-                let decompressedData: ArrayBufferLike | null = null;
-                try {
-                    decompressedData = Pako.inflate(scenario.get("mainHeader").get("compressedData").getValue(), { raw: true });
-                    if (decompressedData) {
-                        currentRW = {
-                            "name": "scenarioDataView",
-                            "index": 0,
-                            "dataView": new DataView(decompressedData.buffer)
-                        } as STypeRW;
-                        obj.scenarioRW = currentRW
-                    }
-                } catch (err) {
-                    console.error('Erreur lors de la décompression:', err);
-                }
-                break;
-
-            default:
-
-                if (obj instanceof Function) {
-                    let myObj = obj();
-                    switch (true) {
-
-                        case myObj instanceof ArrayOf:
-                            myObj.readData(currentRW, key, processEntry);
-                            break;
-
-                        case myObj instanceof Section:
-                            console.log("@@@ Section @@@");
-                            myObj.createSection();
-                            processMe(myObj.getValue());
-                            break;
-
-                        default:
-                            myObj.readData(currentRW, key)
-                    }
-                    return myObj;
-                }
+                default:
+                    myObj.readData(currentRW, key)
+            }
+            return myObj;
         }
     }
 
     function processMe(me: any) {
-        // console.log("@ processMe : ", me.constructor)
-        // console.log("@ processMe : ", me instanceof Map)
-        // console.log("@ processMe : ", me)
-
         if (me instanceof Map) {
             for (let [key, obj] of me) {
                 let ret = processEntry(me, key, obj);
@@ -122,10 +122,6 @@ export function readScenario(myUint8Array: Uint8Array, myData: any) {
         }
     }
 
-    processMe(scenario);
-    //console.log(scenario["mainHeader"]["compressedData"]);
+    processMe(me);
 
-
-
-    return scenario;
 }

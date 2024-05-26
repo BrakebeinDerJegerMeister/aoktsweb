@@ -1,11 +1,11 @@
 import { SType } from "./SType";
 
-export class ArrayData extends SType {
-    value: Uint8Array | null;
+export class ArrayData extends SType<Uint8Array> {
+    value: Uint8Array ;
     len: number | Function | null;
     constructor(len: number | Function) {
         super();
-        this.value = null;
+        this.value = new Uint8Array();
         this.len = len;
     }
     getLen() { return typeof this.len == "function" ? this.len() : this.len == Infinity ? undefined : this.len; }

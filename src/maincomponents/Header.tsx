@@ -15,7 +15,7 @@ const Header: React.FC = () => {
         // Navigate with empty state to ensure no data persists
         navigate('/', { state: {} });
     };
-    const { t } = useTranslation();
+    const { t } = useTranslation("translation");
 
     return (
         <Flex align="center" justify="center" bg="blue.500" color="white" p={4} onClick={handleHeaderClick} onDrop={handleDrop} onDragOver={handleDragOver}>

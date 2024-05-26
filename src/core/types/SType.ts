@@ -1,15 +1,15 @@
-export abstract class SType {
+export abstract class SType<T> {
     constructor() {
 
     }
-    setValue(value: Uint8Array | string | number) {
+    setValue(value: T) {
         this._setValue(value);
     }
-    getValue(): Uint8Array | string | number | any {
+    getValue(): T {
         return this._getValue();
     }
 
-    protected abstract _setValue(value: Uint8Array | string | number | null | any): void;
-    protected abstract _getValue(): Uint8Array | string | number | any;
+    protected abstract _setValue(value: T): void;
+    protected abstract _getValue(): T;
 
 }

@@ -1,8 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import en from './locales/en/translation.json';
-import fr from './locales/fr/translation.json';
+
+import translationEn from '@locales/en/translation.json';
+import errorsEn from '@locales/en/errors.json';
+import translationFr from '@locales/fr/translation.json';
+import errorsFr from '@locales/fr/errors.json';
 
 
 i18n
@@ -11,13 +14,16 @@ i18n
   .init({
     resources: {
       en: {
-        translation: en
+        translation: translationEn,
+        errors:errorsEn
       },
       fr: {
-        translation: fr
+        translation: translationFr,
+        errors:errorsFr
       }
     },
     fallbackLng: 'en',
+    ns: ['translation', 'header'],
     detection: {
       order: ['queryString', 'cookie'],
       caches: ['cookie']

@@ -1,10 +1,10 @@
 import { SType } from "./SType";
 
-export class Section extends SType {
+export class Section extends SType<Section> {
     private _myMap: Map<string, any>;
     private _myArgs;
     sectionName: any;
-    constructor(sectionName: any, ...args) {
+    constructor(sectionName: any, ...args:any) {
         super();
         this._myMap = new Map();
         this.sectionName = sectionName;

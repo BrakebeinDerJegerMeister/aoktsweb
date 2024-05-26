@@ -1,7 +1,7 @@
 // Tab1Component.tsx
 import React, { useEffect, useState } from 'react';
 import { FileData, FileInfo } from '../hooks/useFileHandler';
-import { readScenario } from '../core/io/readScenario';
+import { fastReadScenario, readScenario } from '../core/io/readScenario';
 import Pako from 'pako';
 
 interface Props {
@@ -30,6 +30,12 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
 
   useEffect(() => {
     if (!fileData) return;
+    try {
+    fastReadScenario(fileData, {});
+    } catch(erreur) {
+      console.log(erreur);
+    }
+
     let myDataView = new DataView(fileData.arrayBuffer.buffer);
     let versionBuffer = new Uint8Array(myDataView.buffer, 0, 4);
     const decoder = new TextDecoder();
@@ -43,21 +49,21 @@ const Tab1Component: React.FC<Props> = ({ fileData }) => {
       "length": myDataView.getInt32(4, true),
       "headerType": myDataView.getInt32(8, true),
     };
-    console.clear();
-    let scenario = readScenario(fileData.arrayBuffer, data);
+    //console.clear();
+    /*let scenario = readScenario(fileData.arrayBuffer, data);
     let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
     data = {
       ...data, ...{
         "version 2": scenario.get("scenarioHeader").get("version").getValue(),
-        /*"conquestMode": scenario.get("scenarioHeader").get("conquestMode").getValue(),
-        "missionItemsCounter": scenario.get("scenarioHeader").get("missionItemsCounter").getValue(),
-        "missionAvailable": scenario.get("scenarioHeader").get("missionAvailable").getValue(),
-        "missionTimeline": scenario.get("scenarioHeader").get("missionTimeline").getValue(),
-        "originalFilename": scenario.get("scenarioHeader").get("originalFilename").getValue(),*/
+        //"conquestMode": scenario.get("scenarioHeader").get("conquestMode").getValue(),
+        //"missionItemsCounter": scenario.get("scenarioHeader").get("missionItemsCounter").getValue(),
+        //"missionAvailable": scenario.get("scenarioHeader").get("missionAvailable").getValue(),
+        //"missionTimeline": scenario.get("scenarioHeader").get("missionTimeline").getValue(),
+        //"originalFilename": scenario.get("scenarioHeader").get("originalFilename").getValue(),
       }
     }
     setMyData(data);
-    setDataToDownload(compressedData);
+    setDataToDownload(compressedData);*/
 
   }, [fileData]);
 

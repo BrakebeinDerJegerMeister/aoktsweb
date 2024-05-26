@@ -1,6 +1,6 @@
 import { SType } from "./SType";
 
-export class SNumber extends SType {
+export class SNumber extends SType<number> {
     value: number | null;
     constructor() {
         super();

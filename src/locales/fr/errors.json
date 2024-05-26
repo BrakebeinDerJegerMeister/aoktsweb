@@ -1,0 +1,7 @@
+{
+    "extension": "Extension non prise en charge",
+    "headerVersion" : "Version de jeu non prise en charge",
+    "headerType": "Type d'entête inconnu",
+    "inflateError" : "Une erreur est survenue au cours de la décompression des données",
+    "scenarioVersionError" : "Version de scénario non reconnue"
+}

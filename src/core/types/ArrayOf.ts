@@ -1,6 +1,6 @@
 import { SType } from "./SType";
 
-export class ArrayOf<T> extends SType {
+export class ArrayOf<T> extends SType<Array<T>> {
     value: Array<T> = [];
     ofType: T;
     count: number | Function;
@@ -60,8 +60,8 @@ export class ArrayOf<T> extends SType {
     }
     get [Symbol.toStringTag](): string { return 'ArrayOf'; }
 
-    protected _setValue(value: any): void { throw new Error('Method not implemented.'); }
-    protected _getValue() { throw new Error('Method not implemented.'); }
+    protected _setValue(value: Array<T>): void { throw new Error('Method not implemented.'); }
+    protected _getValue():Array<T> { throw new Error('Method not implemented.'); }
 
     readData(reader: STypeRW, key: string, processEntryCallback: Function) {
         //console.log(key);
@@ -72,7 +72,7 @@ export class ArrayOf<T> extends SType {
             let myObjToPush = this.ofType;
             //console.log("@ArrayOf : myObjToPush", myObjToPush)
             this.value.push(myObjToPush);
-            console.log(key+"_"+i, myObjToPush);
+            //console.log(key+"_"+i, myObjToPush);
             processEntryCallback(null, key, myObjToPush);
             //console.log(myObjToPush);
 
