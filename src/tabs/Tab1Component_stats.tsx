@@ -1,13 +1,14 @@
 // Tab1Component.tsx
 import React, { useEffect, useState } from 'react';
 import { GameData } from '@root/core/io/GameData';
+import { FormattedDate } from '@components/FormattedDate';
 
 interface Props {
-  infos : any,
-  data : GameData
+  infos: any,
+  gameData: GameData
 }
 
-const Tab1Component: React.FC<Props> = ({ infos, data }) => {
+const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {
 
   const [dataToDownload, setDataToDownload] = useState<Uint8Array>();
 
@@ -17,7 +18,7 @@ const Tab1Component: React.FC<Props> = ({ infos, data }) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = data.baseName + ".dat";
+      a.download = gameData.baseName + ".dat";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -26,8 +27,8 @@ const Tab1Component: React.FC<Props> = ({ infos, data }) => {
   };
 
   useEffect(() => {
-    if (!data) return;
-    console.log(data.scenario)
+    if (!gameData) return;
+    console.log(gameData.scenario)
     //console.clear();
     /*let scenario = readScenario(fileData.arrayBuffer, data);
     let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
@@ -42,11 +43,21 @@ const Tab1Component: React.FC<Props> = ({ infos, data }) => {
       }
     }
     setDataToDownload(compressedData);*/
-    setDataToDownload(data.inflatedData)
-  }, [data]);
+    setDataToDownload(gameData.inflatedData)
+  }, [gameData]);
 
   return (
     <div>
+      {
+        gameData && gameData.header &&
+        <div>
+          <li>{gameData.header?.get("version").getValue()}</li>
+          <li>{gameData.scenario?.get("scenarioHeader").get("version").getValue()}</li>
+          <li>{gameData.version2}</li>
+          <li>{gameData.scenario?.get("scenarioHeader").get("originalFilename").getValue()}</li>
+          <li>{<FormattedDate timestamp={gameData.header?.get("lastSaveTimestamp").getValue()*1000} />}</li>
+        </div>
+      }
       {
         <div>
           {

@@ -72,8 +72,7 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
         throw new InflateError();
     }
     let scenarioDataView = new DataView(inflatedData.buffer);
-    let version2: number = scenarioDataView.getFloat32(4, true)
-    console.log(getRoundedVersion(version2));
+    let version2: number = getRoundedVersion(scenarioDataView.getFloat32(4, true));
     if (!((version2 >= 1) && (version2 <= 1.6))) {
         throw new ScenarioVersionError();
     }
@@ -82,7 +81,6 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
     myData.header = myHeader;
     myData.scenarioDataView = scenarioDataView;
     myData.headerDataView = headerDataView;
-
     return myHeader;
 }
 

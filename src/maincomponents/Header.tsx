@@ -18,8 +18,8 @@ const Header: React.FC = () => {
     const { t } = useTranslation("translation");
 
     return (
-        <Flex align="center" justify="center" bg="blue.500" color="white" p={4} onClick={handleHeaderClick} onDrop={handleDrop} onDragOver={handleDragOver}>
-            <Heading as="h1" size="lg">
+        <Flex align="center" justify="center" bg="blue.500" color="white" p={4} onDrop={handleDrop} onDragOver={handleDragOver}>
+            <Heading as="h1" size="lg" onClick={handleHeaderClick}>
                 {t('headerTxt')}
             </Heading>
             <LanguageSwitcher ml="auto" />

@@ -62,7 +62,7 @@ const ScenarioPage: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <Tab1Component infos={infos} data={myData}/>
+            <Tab1Component infos={infos} gameData={myData}/>
           </TabPanel>
           <TabPanel>
             <Tab2Component />
