@@ -28,21 +28,6 @@ const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {
 
   useEffect(() => {
     if (!gameData) return;
-    console.log(gameData.scenario)
-    //console.clear();
-    /*let scenario = readScenario(fileData.arrayBuffer, data);
-    let compressedData = scenario.get("mainHeader").get("compressedData").getValue();
-    data = {
-      ...data, ...{
-        "version 2": scenario.get("scenarioHeader").get("version").getValue(),
-        //"conquestMode": scenario.get("scenarioHeader").get("conquestMode").getValue(),
-        //"missionItemsCounter": scenario.get("scenarioHeader").get("missionItemsCounter").getValue(),
-        //"missionAvailable": scenario.get("scenarioHeader").get("missionAvailable").getValue(),
-        //"missionTimeline": scenario.get("scenarioHeader").get("missionTimeline").getValue(),
-        //"originalFilename": scenario.get("scenarioHeader").get("originalFilename").getValue(),
-      }
-    }
-    setDataToDownload(compressedData);*/
     setDataToDownload(gameData.inflatedData)
   }, [gameData]);
 
@@ -55,7 +40,7 @@ const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {
           <li>{gameData.scenario?.get("scenarioHeader").get("version").getValue()}</li>
           <li>{gameData.version2}</li>
           <li>{gameData.scenario?.get("scenarioHeader").get("originalFilename").getValue()}</li>
-          <li>{<FormattedDate timestamp={gameData.header?.get("lastSaveTimestamp").getValue()*1000} />}</li>
+          <li>{<FormattedDate timestamp={gameData.header?.get("lastSaveTimestamp").getValue() * 1000} />}</li>
         </div>
       }
       {
@@ -68,16 +53,9 @@ const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {
         </div>
       }
       <br />
-      {/* <div>
-        {
-          Object.entries(myData).map(([key, value], i) => (
-            <p key={i}>{`${key} : ${value}`}</p>
-          ))
-        }
-      </div> */}
-      {dataToDownload && (
-        <button onClick={downloadData}>Download Data</button>
-      )}
+      {
+        dataToDownload && <button onClick={downloadData}>Download Data</button>
+      }
     </div>
   );
 };
