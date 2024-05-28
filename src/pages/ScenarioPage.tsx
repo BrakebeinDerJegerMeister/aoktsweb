@@ -9,22 +9,24 @@ import { fastReadScenario, readScenario } from '@root/core/io/readScenario';
 import { GameData } from '@root/core/io/GameData';
 
 const ScenarioPage: React.FC = () => {
-  const [infos, setInfos] = useState<FileInfo | null>(null);
+  const [infos, setInfos] = useState<FileInfo>();
   const [myData, setMyData] = useState({});
   const location = useLocation();
-  const [fileData,setFileData] = useState(location.state?.fileData as FileData | null);
+  const [myEerror, setMyError] = useState<Error>();
+
+  const [fileData, setFileData] = useState(location.state?.fileData as FileData);
 
   useEffect(() => {
-    const data = location.state?.fileData as FileData | null;
+    const data = location.state?.fileData as FileData;
     if (data) {
       setFileData(data);
     }
   }, [location.state]);
-  
 
-  useEffect(()=>{
-    if(!fileData) return;
-    let myData : GameData = {};
+
+  useEffect(() => {
+    if (!fileData) return;
+    let myData: GameData = {};
     let myHeader;
     let myScenario;
 
@@ -32,6 +34,9 @@ const ScenarioPage: React.FC = () => {
       myHeader = fastReadScenario(fileData, myData);
     } catch (erreur) {
       console.log(erreur);
+      if (erreur instanceof Error) {
+        setMyError(erreur);
+      }
       return;
     }
 
@@ -39,6 +44,9 @@ const ScenarioPage: React.FC = () => {
       myScenario = readScenario(fileData, myData);
     } catch (erreur) {
       console.log(erreur);
+      if (erreur instanceof Error) {
+        setMyError(erreur);
+      }
       return;
     }
 
@@ -47,29 +55,35 @@ const ScenarioPage: React.FC = () => {
       "fileSize": fileData.fileSize,
       "fileType": fileData.fileType,
     });
-    
+
     setMyData(myData);
 
-  },[fileData]);
+  }, [fileData]);
 
   return (
     <div>
-      <Tabs defaultIndex={0} variant="enclosed" colorScheme="green">
-        <TabList flexWrap="wrap">
-          <Tab>Stats</Tab>
-          <Tab>Tab 2</Tab>
-          {/* Ajouter plus de Tab selon le besoin */}
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <Tab1Component infos={infos} gameData={myData}/>
-          </TabPanel>
-          <TabPanel>
-            <Tab2Component />
-          </TabPanel>
-          {/* Ajouter plus de TabPanel selon le contenu de chaque onglet */}
-        </TabPanels>
-      </Tabs>
+      {
+
+      myEerror && <div>{ myEerror.message }</div> ||
+
+        <Tabs defaultIndex={0} variant="enclosed" colorScheme="green">
+          <TabList flexWrap="wrap">
+            <Tab>Stats</Tab>
+            <Tab>Tab 2</Tab>
+            {/* Ajouter plus de Tab selon le besoin */}
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <Tab1Component infos={infos} gameData={myData} />
+            </TabPanel>
+            <TabPanel>
+              <Tab2Component />
+            </TabPanel>
+            {/* Ajouter plus de TabPanel selon le contenu de chaque onglet */}
+          </TabPanels>
+        </Tabs>
+
+      }
     </div>
   );
 };
