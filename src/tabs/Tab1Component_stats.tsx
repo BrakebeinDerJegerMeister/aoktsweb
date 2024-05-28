@@ -36,11 +36,12 @@ const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {
       {
         gameData && gameData.header &&
         <div>
-          <li>{gameData.header?.get("version").getValue()}</li>
-          <li>{gameData.scenario?.get("scenarioHeader").get("version").getValue()}</li>
+          <li>Version : {gameData.header?.get("version").getValue()}</li>
+          <li>Long version : {gameData.scenario?.get("scenarioHeader").get("version").getValue()}</li>
           <li>{gameData.version2}</li>
-          <li>{gameData.scenario?.get("scenarioHeader").get("originalFilename").getValue()}</li>
-          <li>{<FormattedDate timestamp={gameData.header?.get("lastSaveTimestamp").getValue() * 1000} />}</li>
+          <li>Original filename : {gameData.scenario?.get("scenarioHeader").get("originalFilename")?.getValue()}</li>
+          <li>Date : {<FormattedDate timestamp={gameData.header?.get("lastSaveTimestamp")?.getValue() * 1000} />}</li>
+          <li>Header Type : {gameData.header?.get("headerType")?.getValue()}</li>
         </div>
       }
       {

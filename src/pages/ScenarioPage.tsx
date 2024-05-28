@@ -10,14 +10,15 @@ import { GameData } from '@root/core/io/GameData';
 
 const ScenarioPage: React.FC = () => {
   const [infos, setInfos] = useState<FileInfo>();
-  const [myData, setMyData] = useState({});
-  const location = useLocation();
+  const [myData, setMyData] = useState<GameData>({});
   const [myEerror, setMyError] = useState<Error>();
+  
+  const location = useLocation();
 
-  const [fileData, setFileData] = useState(location.state?.fileData as FileData);
+  const [fileData, setFileData] = useState<FileData>(location.state?.fileData);
 
   useEffect(() => {
-    const data = location.state?.fileData as FileData;
+    const data : FileData = location.state?.fileData;
     if (data) {
       setFileData(data);
     }
@@ -57,6 +58,7 @@ const ScenarioPage: React.FC = () => {
     });
 
     setMyData(myData);
+    setMyError(undefined);
 
   }, [fileData]);
 

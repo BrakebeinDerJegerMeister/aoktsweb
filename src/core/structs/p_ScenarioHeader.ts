@@ -4,7 +4,7 @@ import { p_PlayerData1 } from "./p_PlayerData1";
 export function p_ScenarioHeader(o: Map<string, any>, myData:any) {
     o.set("nextUnitID", u32());
     o.set("version", f32());
-    o.set("playerNames", arrayOf(ascii(256),16));
+    /*o.set("playerNames", arrayOf(ascii(256),16));
     o.set("strTablePlayerNames", arrayOf(u32(),16));   
     o.set("playerData1", arrayOf(section(p_PlayerData1, myData), 16));
     o.set("conquestMode", u8());
@@ -12,5 +12,5 @@ export function p_ScenarioHeader(o: Map<string, any>, myData:any) {
     o.set("missionAvailable", u16());
     o.set("missionTimeline", f32());
     o.set("missionItem", arrayOf(arrayData(30),()=>{ return  o.get("missionItemsCounter"); }));
-    o.set("originalFilename", str(u16()));
+    o.set("originalFilename", str(u16()));*/
 }
