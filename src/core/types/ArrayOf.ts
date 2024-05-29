@@ -16,15 +16,17 @@ export class ArrayOf<T> extends SType<Array<T>> {
     get [Symbol.toStringTag](): string { return 'ArrayOf'; }
 
     protected _setValue(_value: Array<T>): void { throw new Error('Method not implemented.'); }
-    protected _getValue(): Array<T> { throw new Error('Method not implemented.'); }
+    protected _getValue(): Array<T> { 
+        return this.value;
+     }
 
     _readData(_reader: STypeRW, key: string, processEntryCallback: Function) {
         let len: number = typeof this.count == "number" ? this.count : this.count().getValue();
         console.log("Array (" + len + ") :", key)
         for (let i = 0; i < len; i++) {
-            let myObjToPush = this.ofType;
-            this.value.push(myObjToPush);
-            processEntryCallback(null, key, myObjToPush);
+            let myObj = this.ofType;
+            let myRet = processEntryCallback(this.value, key, myObj);
+            this.value.push(myRet);
         }
     }
 }
