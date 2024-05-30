@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",        // Compilation target to use the latest ESNext features
+      "module": "CommonJS",      // CommonJS modules for compatibility with Node.js
+      "moduleResolution": "node",// Node.js-style module resolution
+      "baseUrl": ".",            // Base directory for relative paths
+      "strict": true,            // Enable all strict type-checking options
+      "alwaysStrict": true,      // Parse in strict mode and emit "use strict" for each source file
+      "noImplicitAny": true,     // Raise error on expressions and declarations with an implied 'any' type
+      "noImplicitThis": true,    // Raise error on 'this' expressions with an implied 'any' type
+      "strictNullChecks": true,  // Enable strict null checks
+      "experimentalDecorators": true, // Enable experimental support for ES decorators
+      "outDir": "./build",       // Redirect output structure to the build directory
+      "paths": {
+        "assemblyscript": ["node_modules/assemblyscript/dist/assemblyscript.d.ts"]
+      }
+    },
+    "include": ["assembly/**/*.ts"],  // Include all TypeScript files in 'assembly' directory
+    "exclude": ["node_modules", "**/*.spec.ts"]
+  }
+  
