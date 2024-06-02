@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { GameData } from '@root/core/io/GameData';
 import { FormattedDate } from '@components/FormattedDate';
 import { SType } from '@root/core/types/SType';
-import WasmComponent from '@components/wasmComponent';
 
 interface Props {
   infos: any,
@@ -39,7 +38,6 @@ const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {
       {
         gameData && gameData.header &&
         <div>
-          <WasmComponent/>
           <ul>
             <li>Version : {gameData.header?.get("version").getValue()}</li>
             <li>Long version : {gameData.scenario?.get("scenarioHeader").get("version").getValue()}</li>

@@ -51,6 +51,8 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
     }
 
     let myHeader: MainHeaderMap = new Map();
+    let myHeaderObj = {}
+
     myData.version = version;
     myData.headerType = headerType;
     p_MainHeader(myHeader, myData);
@@ -60,13 +62,13 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
         "dataView": headerDataView
     } as STypeRW;
 
-    doReadProcess(myHeader, headerRW);
+    doReadProcess(myHeader, headerRW, myHeaderObj);
 
     let compressedData = myHeader.get('compressedData').getValue();
     let inflatedData;
     try {
         inflatedData = Pako.inflate(compressedData, { raw: true });
-        console.log(inflatedData);
+        //console.log(inflatedData);
     }
     catch {
         throw new InflateError();
@@ -81,27 +83,30 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
     myData.header = myHeader;
     myData.scenarioDataView = scenarioDataView;
     myData.headerDataView = headerDataView;
+    console.log(myHeaderObj);
     return myHeader;
 }
 
 
 export function readScenario(_fileData: FileData, myData: GameData) {
     let myScenario = new Map();
+    let myScenarioObj = {};
     let scenarioRW = {
         "name": "mainDataView",
         "index": 0,
         "dataView": myData.scenarioDataView
     } as STypeRW;
     p_Scenario(myScenario, myData);
-    doReadProcess(myScenario, scenarioRW);
+    doReadProcess(myScenario, scenarioRW, myScenarioObj);
 
     myData.scenario = myScenario;
+    console.log(myScenarioObj);
     return myScenario;
 }
 
-function doReadProcess(me: Map<string, any>, currentRW: STypeRW) {
+function doReadProcess(me: Map<string, any>, currentRW: STypeRW, simpleObj: any) {
 
-    function processEntry(_me: any, key: string, obj: any) {
+    function processEntry(_me: any, key: string, obj: any, simpleObj: any) {
         if (obj instanceof Function) {
             let myObj = obj();
             switch (true) {
@@ -111,9 +116,9 @@ function doReadProcess(me: Map<string, any>, currentRW: STypeRW) {
                     break;
 
                 case myObj instanceof Section:
-                    console.log("@@@ Section @@@");
+                    //console.log("@@@ Section @@@");
                     myObj.createSection();
-                    processMe(myObj.getValue());
+                    processMe(myObj.getValue(), simpleObj);
                     break;
 
                 default:
@@ -123,22 +128,36 @@ function doReadProcess(me: Map<string, any>, currentRW: STypeRW) {
         }
     }
 
-    function processMe(me: any) {
+    function processMe(me: any, simpleObj: any) {
         if (me instanceof Map) {
             for (let [key, obj] of me) {
-                let ret = processEntry(me, key, obj);
+                let ret = processEntry(me, key, obj, simpleObj);
+                //console.log(key)
+                if (ret.getValue() instanceof Map) {
+                    simpleObj[key] = {};
+                    for (let [e_key,e_val] of ret.getValue().entries()) {
+                        simpleObj[key][e_key] = e_val.getValue();
+                    }
+                } else if (ret.getValue() instanceof Array) {
+                    simpleObj[key] = [];
+                    for (let e_val of ret.getValue()) {
+                        simpleObj[key].push(e_val.getValue());
+                    }
+                } else {
+                    simpleObj[key] = ret.getValue();
+                }
                 me.set(key, ret);
             }
-        } else {
+        } /*else {
             Object.entries(me).forEach((entry) => {
                 let [key, obj] = entry;
                 console.log(key, obj)
-                let ret = processEntry(me, key, obj);
+                let ret = processEntry(me, key, obj, simpleObj);
                 me[key] = ret;
             });
-        }
+        }*/
     }
 
-    processMe(me);
+    processMe(me, simpleObj);
 
 }

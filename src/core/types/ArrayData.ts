@@ -16,7 +16,7 @@ export class ArrayData extends SType<Uint8Array> {
         let dataBuffer = new Uint8Array(reader.dataView.buffer, reader.index, dLen);
         this.setValue(dataBuffer);
         reader.index += dLen;
-        console.log(key +" :\n", this.value);
+        //console.log(key +" :\n", this.value);
     }
     writeData() { }
 }

@@ -23,7 +23,7 @@ export class Str extends SString {
         const strDecoder = new TextDecoder();
         reader.index += sLen;
         this.setValue(strDecoder.decode(strBuffer));
-        console.log(key +" :\n", this.value);
+        //console.log(key +" :\n", this.value);
     }
 
     writeData() { }

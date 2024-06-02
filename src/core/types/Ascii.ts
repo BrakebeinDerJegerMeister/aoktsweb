@@ -15,7 +15,7 @@ export class Ascii extends SString {
         const asciiDecoder = new TextDecoder();
         reader.index += alen;
         this.setValue(asciiDecoder.decode(asciiBuffer));
-        console.log(key, ":", this.value);
+        //console.log(key, ":", this.value);
     }
     writeData() { }
 }

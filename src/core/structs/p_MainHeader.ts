@@ -1,6 +1,5 @@
 import { arrayData, arrayOf, ascii, str, u32 } from "../factories/dataFactories";
 import { SType } from "../types/SType";
-import { U32 } from "../types/U32";
 
 
 type MainHeaderMapValue<K extends keyof MainHeaderMapOptions> = MainHeaderMapOptions[K] | (() => MainHeaderMapOptions[K]);
@@ -40,7 +39,7 @@ export function p_MainHeader(o: MainHeaderMap, myData: any) {
 }
 
 function p_MainHeader_v2(o: MainHeaderMap, myData: any) {
-  console.log("@@@ using p_MainHeader_v2 @@@");
+  //console.log("@@@ using p_MainHeader_v2 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
   o.set("headerType", u32());
@@ -52,7 +51,7 @@ function p_MainHeader_v2(o: MainHeaderMap, myData: any) {
 }
 
 function p_MainHeader_v3(o: MainHeaderMap, myData: any) {
-  console.log("@@@ using p_MainHeader_v3 @@@");
+  //console.log("@@@ using p_MainHeader_v3 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
   o.set("headerType", u32());
@@ -63,13 +62,12 @@ function p_MainHeader_v3(o: MainHeaderMap, myData: any) {
   o.set("value1000", u32());
   o.set("gameEdition", u32());
   o.set("usedSetsCount", u32());
-  //console.log("@ p_MainHeader v3 : usedSetsCount", o.get("usedSetsCount"))
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("compressedData", arrayData(Infinity));
 }
 
 function p_MainHeader_v5(o: MainHeaderMap, myData: any) {
-  console.log("@@@ using p_MainHeader_v5 @@@");
+  //console.log("@@@ using p_MainHeader_v5 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
   o.set("headerType", u32());
@@ -80,7 +78,6 @@ function p_MainHeader_v5(o: MainHeaderMap, myData: any) {
   o.set("value1000", u32());
   o.set("gameEdition", u32());
   o.set("usedSetsCount", u32());
-  //console.log("@ p_MainHeader v4 : usedSetsCount", o.get("usedSetsCount"))
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("creatorName", str(u32()));
   o.set("triggerCount", u32());
@@ -88,7 +85,7 @@ function p_MainHeader_v5(o: MainHeaderMap, myData: any) {
 }
 
 function p_MainHeader_v6(o: MainHeaderMap, myData: any) {
-  console.log("@@@ using p_MainHeader_v6 @@@");
+  //console.log("@@@ using p_MainHeader_v6 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
   o.set("headerType", u32());
@@ -98,7 +95,6 @@ function p_MainHeader_v6(o: MainHeaderMap, myData: any) {
   o.set("value1000", u32());
   o.set("gameEdition", u32());
   o.set("usedSetsCount", u32());
-  //console.log("@ p_MainHeader v4 : usedSetsCount", o.get("usedSetsCount"))
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("creatorName", str(u32()));
   o.set("triggerCount", u32());

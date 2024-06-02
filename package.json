@@ -8,9 +8,6 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "asbuild:debug": "asc assembly/index.ts --target debug --bindings esm",
-    "asbuild:release": "asc assembly/index.ts --target release --bindings esm",
-    "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "test": "node tests",
     "start": "npx serve ."
   },
@@ -47,12 +44,10 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "assemblyscript": "^0.27.27",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vite-plugin-wasm": "^3.3.0"
+    "vite": "^5.2.0"
   }
 }

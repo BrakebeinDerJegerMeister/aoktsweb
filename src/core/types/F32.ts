@@ -9,7 +9,7 @@ export class F32 extends SNumber {
         let value = reader.dataView.getFloat32(reader.index, true);
         reader.index += this.nbBytes;
         this.setValue(value);
-        console.log(key +" :\n", this.value);
+        //console.log(key +" :\n", this.value);
     }
     writeData() { }
 }

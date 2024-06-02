@@ -22,7 +22,7 @@ export class ArrayOf<T> extends SType<Array<T>> {
 
     _readData(_reader: STypeRW, key: string, processEntryCallback: Function) {
         let len: number = typeof this.count == "number" ? this.count : this.count().getValue();
-        console.log("Array (" + len + ") :", key)
+        //console.log("Array (" + len + ") :", key)
         for (let i = 0; i < len; i++) {
             let myObj = this.ofType;
             let myRet = processEntryCallback(this.value, key, myObj);

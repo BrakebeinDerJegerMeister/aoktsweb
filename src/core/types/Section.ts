@@ -18,7 +18,7 @@ export class Section extends SType<Section> {
     // Définir une signature d'index pour permettre l'accès par clé
     [key: string]: any | any;
     createSection() { 
-        console.log("Section :", this.sectionName.name);
+        //console.log("Section :", this.sectionName.name);
         this.sectionName(this._myMap, ...this._myArgs); 
     }
     protected _setValue(value: any): void { this._myMap = value; }
