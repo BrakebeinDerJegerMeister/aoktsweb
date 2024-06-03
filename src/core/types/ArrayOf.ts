@@ -13,12 +13,13 @@ export class ArrayOf<T> extends SType<Array<T>> {
     getCount(): number {
         return typeof this.count == "function" ? this.count() : this.count;
     }
+    
     get [Symbol.toStringTag](): string { return 'ArrayOf'; }
 
     protected _setValue(_value: Array<T>): void { throw new Error('Method not implemented.'); }
     protected _getValue(): Array<T> { 
         return this.value;
-     }
+    }
 
     _readData(_reader: STypeRW, key: string, processEntryCallback: Function) {
         let len: number = typeof this.count == "number" ? this.count : this.count().getValue();
