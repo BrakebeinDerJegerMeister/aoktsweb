@@ -1,7 +1,7 @@
 
 import { p_Scenario } from '../structs/p_Scenario';
 import { Section } from '../types/Section';
-import { ArrayOf } from '../types/ArrayOf';
+
 import Pako from 'pako';
 
 import { getRoundedVersion } from '../utils/getRoundedVersion';
@@ -14,6 +14,7 @@ import { HeaderTypeError } from '@errors/headerTypeError';
 import { InflateError } from '@errors/inflateError';
 import { ScenarioVersionError } from '@errors/scenarioVersionError';
 import { GameData } from './GameData';
+import { SType } from '../types/SType';
 
 
 
@@ -22,7 +23,7 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
 
     let fileName: string = fileData.fileName;
     let spFileName = fileName.split(".");
-    let extension: string = fileName.includes(".") ? spFileName.pop() || "" : "";
+    let extension: string = fileName.includes(".") ? spFileName.pop() ?? "" : "";
     let baseName = spFileName.join(".");
 
     myData.fileName = fileName;
@@ -104,27 +105,33 @@ export function readScenario(_fileData: FileData, myData: GameData) {
     return myScenario;
 }
 
-function doReadProcess(me: Map<string, any>, currentRW: STypeRW, simpleObj: any) {
 
+function doReadProcess(me: Map<string, any>, currentRW: STypeRW, simpleObj: any) {
+    
     function processEntry(_me: any, key: string, obj: any, simpleObj: any) {
         if (obj instanceof Function) {
             let myObj = obj();
-            switch (true) {
-
-                case myObj instanceof ArrayOf:
-                    myObj.readData(currentRW, key, processEntry);
-                    break;
-
-                case myObj instanceof Section:
-                    //console.log("@@@ Section @@@");
-                    myObj.createSection();
-                    processMe(myObj.getValue(), simpleObj);
-                    break;
-
-                default:
-                    myObj.readData(currentRW, key)
+            if (myObj instanceof Section) {
+                myObj.createSection();
+                processMe(myObj.getValue(), simpleObj);
+            } else {
+                myObj.readData(currentRW, key, processEntry)
             }
             return myObj;
+        }
+    }
+    
+    function processArray(simpleObj:any, key: string, ret: SType<Array<any>>) {
+        simpleObj[key] = [];
+        for (let e_val of ret.getValue()) {
+            simpleObj[key].push(e_val.getValue());
+        }
+    }
+    
+    function processMap(simpleObj:any, key: string, ret: SType<Map<string, any>>) {
+        simpleObj[key] = {};
+        for (let [e_key, e_val] of ret.getValue().entries()) {
+            simpleObj[key][e_key] = e_val.getValue();
         }
     }
 
@@ -132,30 +139,16 @@ function doReadProcess(me: Map<string, any>, currentRW: STypeRW, simpleObj: any)
         if (me instanceof Map) {
             for (let [key, obj] of me) {
                 let ret = processEntry(me, key, obj, simpleObj);
-                //console.log(key)
                 if (ret.getValue() instanceof Map) {
-                    simpleObj[key] = {};
-                    for (let [e_key,e_val] of ret.getValue().entries()) {
-                        simpleObj[key][e_key] = e_val.getValue();
-                    }
+                    processMap(simpleObj, key, ret);
                 } else if (ret.getValue() instanceof Array) {
-                    simpleObj[key] = [];
-                    for (let e_val of ret.getValue()) {
-                        simpleObj[key].push(e_val.getValue());
-                    }
+                    processArray(simpleObj, key, ret);
                 } else {
                     simpleObj[key] = ret.getValue();
                 }
                 me.set(key, ret);
             }
-        } /*else {
-            Object.entries(me).forEach((entry) => {
-                let [key, obj] = entry;
-                console.log(key, obj)
-                let ret = processEntry(me, key, obj, simpleObj);
-                me[key] = ret;
-            });
-        }*/
+        }
     }
 
     processMe(me, simpleObj);

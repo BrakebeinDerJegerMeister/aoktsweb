@@ -1,4 +1,4 @@
-import { arrayData, arrayOf, ascii, str, u32 } from "../factories/dataFactories";
+import { arrayData, arrayOf, ascii, countOf, str, u32 } from "../factories/dataFactories";
 import { SType } from "../types/SType";
 
 
@@ -38,7 +38,7 @@ export function p_MainHeader(o: MainHeaderMap, myData: any) {
   }
 }
 
-function p_MainHeader_v2(o: MainHeaderMap, myData: any) {
+function p_MainHeader_v2(o: MainHeaderMap, _myData: any) {
   //console.log("@@@ using p_MainHeader_v2 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -50,7 +50,7 @@ function p_MainHeader_v2(o: MainHeaderMap, myData: any) {
   o.set("compressedData", arrayData(Infinity));
 }
 
-function p_MainHeader_v3(o: MainHeaderMap, myData: any) {
+function p_MainHeader_v3(o: MainHeaderMap, _myData: any) {
   //console.log("@@@ using p_MainHeader_v3 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -61,12 +61,12 @@ function p_MainHeader_v3(o: MainHeaderMap, myData: any) {
   o.set("playerCount", u32());
   o.set("value1000", u32());
   o.set("gameEdition", u32());
-  o.set("usedSetsCount", u32());
+  o.set("usedSetsCount", countOf(u32(),()=>{ o.get("usedSets")?.getValue()?.size}));
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("compressedData", arrayData(Infinity));
 }
 
-function p_MainHeader_v5(o: MainHeaderMap, myData: any) {
+function p_MainHeader_v5(o: MainHeaderMap, _myData: any) {
   //console.log("@@@ using p_MainHeader_v5 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -77,14 +77,14 @@ function p_MainHeader_v5(o: MainHeaderMap, myData: any) {
   o.set("playerCount", u32());
   o.set("value1000", u32());
   o.set("gameEdition", u32());
-  o.set("usedSetsCount", u32());
+  o.set("usedSetsCount", countOf(u32(),()=>{ o.get("usedSets")?.getValue()?.size }));
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("creatorName", str(u32()));
   o.set("triggerCount", u32());
   o.set("compressedData", arrayData(Infinity));
 }
 
-function p_MainHeader_v6(o: MainHeaderMap, myData: any) {
+function p_MainHeader_v6(o: MainHeaderMap, _myData: any) {
   //console.log("@@@ using p_MainHeader_v6 @@@");
   o.set("version", ascii(4));
   o.set("headerLength", u32());
@@ -94,7 +94,7 @@ function p_MainHeader_v6(o: MainHeaderMap, myData: any) {
   o.set("playerCount", u32());
   o.set("value1000", u32());
   o.set("gameEdition", u32());
-  o.set("usedSetsCount", u32());
+  o.set("usedSetsCount", countOf(u32(),()=>{ o.get("usedSets")?.getValue()?.size }));
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("creatorName", str(u32()));
   o.set("triggerCount", u32());

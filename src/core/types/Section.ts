@@ -11,12 +11,6 @@ export class Section extends SType<Section> {
         //console.log(args);
         this._myArgs = args;
     }
-    // Itérateur
-    [Symbol.iterator](): IterableIterator<[string, any]> {
-        return this.map[Symbol.iterator]();
-    }
-    // Définir une signature d'index pour permettre l'accès par clé
-    [key: string]: any | any;
     createSection() { 
         //console.log("Section :", this.sectionName.name);
         this.sectionName(this._myMap, ...this._myArgs); 
@@ -27,4 +21,5 @@ export class Section extends SType<Section> {
     public values() { return this.values; }
     public keys() { return this.keys; }
     public entries() { return this.entries; }
+
 }

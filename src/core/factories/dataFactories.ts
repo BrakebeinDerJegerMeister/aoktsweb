@@ -1,6 +1,7 @@
 import { ArrayData } from "../types/ArrayData";
 import { ArrayOf } from "../types/ArrayOf";
 import { Ascii } from "../types/Ascii";
+import { CountOf } from "../types/CountOf";
 import { F32 } from "../types/F32";
 import { SType } from "../types/SType";
 import { Section } from "../types/Section";
@@ -35,6 +36,10 @@ export function ascii(len: number | Function): () => SType<string> {
 
 export function str(len: any): () => SType<string> {
     return function () { return new Str(len); };
+}
+
+export function countOf<T>(ofType: T, count: Function): () => SType<number> {
+    return function () { return new CountOf<T>(ofType, count); };
 }
 
 export function arrayOf<T>(ofType: T, count: number | Function): () => SType<Array<T>> {

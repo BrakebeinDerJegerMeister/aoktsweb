@@ -1,7 +1,5 @@
 export abstract class SType<T> {
-    constructor() {
-
-    }
+    
     setValue(value: T) {
         this._setValue(value);
     }
