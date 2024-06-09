@@ -4,7 +4,7 @@ import Header from './maincomponents/Header';
 import Footer from './maincomponents/Footer';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRouter from './maincomponents/AppRouter';
-import { myStructureDescription } from './core/facades/scenarioFacade';
+//import { myStructureDescription } from './core/facades/scenarioFacade';
 
 const App: React.FC = () => {
 
@@ -12,9 +12,9 @@ const App: React.FC = () => {
     console.clear();
     if (process.env.NODE_ENV === 'development') {
       console.log("Action spécifique au développement");
-      for (const [key, val] of Object.entries(myStructureDescription)) {
-        console.log(key, val);
-      }
+      //for (const [key, val] of Object.entries(myStructureDescription)) {
+        //console.log(key, val);
+      //}
       //console.log(myStructureDescription);
     }
     

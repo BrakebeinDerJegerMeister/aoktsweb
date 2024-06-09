@@ -38,6 +38,17 @@ export function p_MainHeader(o: MainHeaderMap, myData: any) {
   }
 }
 
+export const struct_MainHeader_v2 = {
+  "version": { "type": ascii(4) },
+  "headerLength": { "type": u32() },
+  "headerType": { "type": u32() },
+  "lastSaveTimestamp": { "type": u32() },
+  "instructions": { "type": str(u32()) },
+  "individualVictories": { "type": u32() },
+  "playerCount": { "type": u32() },
+  "compressedData": { "type": arrayData(Infinity) },
+}
+
 function p_MainHeader_v2(o: MainHeaderMap, _myData: any) {
   //console.log("@@@ using p_MainHeader_v2 @@@");
   o.set("version", ascii(4));
@@ -48,6 +59,21 @@ function p_MainHeader_v2(o: MainHeaderMap, _myData: any) {
   o.set("individualVictories", u32());
   o.set("playerCount", u32());
   o.set("compressedData", arrayData(Infinity));
+}
+
+export const struct_MainHeader_v3 = {
+  "version": { "type": ascii(4) },
+  "headerLength": { "type": u32() },
+  "headerType": { "type": u32() },
+  "lastSaveTimestamp": { "type": u32() },
+  "instructions": { "type": str(u32()) },
+  "individualVictories": { "type": u32() },
+  "playerCount": { "type": u32() },
+  "value1000": { "type": u32() },
+  "gameEdition": { "type": u32() },
+  "usedSetsCount": { "type": u32() },
+  "usedSets": { "type": arrayOf(u32()) },
+  "compressedData": { "type": arrayData(Infinity) },
 }
 
 function p_MainHeader_v3(o: MainHeaderMap, _myData: any) {
@@ -61,7 +87,7 @@ function p_MainHeader_v3(o: MainHeaderMap, _myData: any) {
   o.set("playerCount", u32());
   o.set("value1000", u32());
   o.set("gameEdition", u32());
-  o.set("usedSetsCount", countOf(u32(),()=>{ o.get("usedSets")?.getValue()?.size}));
+  o.set("usedSetsCount", countOf(u32(), () => { o.get("usedSets")?.getValue()?.size }));
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("compressedData", arrayData(Infinity));
 }
@@ -77,7 +103,7 @@ function p_MainHeader_v5(o: MainHeaderMap, _myData: any) {
   o.set("playerCount", u32());
   o.set("value1000", u32());
   o.set("gameEdition", u32());
-  o.set("usedSetsCount", countOf(u32(),()=>{ o.get("usedSets")?.getValue()?.size }));
+  o.set("usedSetsCount", countOf(u32(), () => { o.get("usedSets")?.getValue()?.size }));
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("creatorName", str(u32()));
   o.set("triggerCount", u32());
@@ -94,7 +120,7 @@ function p_MainHeader_v6(o: MainHeaderMap, _myData: any) {
   o.set("playerCount", u32());
   o.set("value1000", u32());
   o.set("gameEdition", u32());
-  o.set("usedSetsCount", countOf(u32(),()=>{ o.get("usedSets")?.getValue()?.size }));
+  o.set("usedSetsCount", countOf(u32(), () => { o.get("usedSets")?.getValue()?.size }));
   o.set("usedSets", arrayOf(u32(), () => o.get("usedSetsCount")));
   o.set("creatorName", str(u32()));
   o.set("triggerCount", u32());

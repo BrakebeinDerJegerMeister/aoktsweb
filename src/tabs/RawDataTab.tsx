@@ -1,4 +1,4 @@
-//src/tabs/Tab2Component.tsx
+// src/tabs/RawDataTab.tsx
 
 import { Scenario } from '@root/pages/ScenarioPage';
 import React from 'react';
@@ -7,10 +7,10 @@ interface Props {
   scenario?: Scenario,
 }
 
-const Tab2Component: React.FC<Props> = ({ scenario }) => {
+const RawDataTab: React.FC<Props> = ({ scenario }) => {
   return (
     <>
-      <p>Tab2</p>
+      <p>Raw Data</p>
         {
           scenario && scenario.mainHeader && Object.entries(scenario.mainHeader).map(([_name, comp], i)=>{
             return <div key={i}>{comp}</div>
@@ -20,4 +20,4 @@ const Tab2Component: React.FC<Props> = ({ scenario }) => {
   );
 };
 
-export default Tab2Component;
+export default RawDataTab;

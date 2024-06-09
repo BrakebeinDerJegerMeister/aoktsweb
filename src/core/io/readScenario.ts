@@ -84,7 +84,7 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
     myData.header = myHeader;
     myData.scenarioDataView = scenarioDataView;
     myData.headerDataView = headerDataView;
-    console.log(myHeaderObj);
+    //console.log(myHeaderObj);
     return myHeader;
 }
 
@@ -101,7 +101,7 @@ export function readScenario(_fileData: FileData, myData: GameData) {
     doReadProcess(myScenario, scenarioRW, myScenarioObj);
 
     myData.scenario = myScenario;
-    console.log(myScenarioObj);
+    //console.log(myScenarioObj);
     return myScenario;
 }
 

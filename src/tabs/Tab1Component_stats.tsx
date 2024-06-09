@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { GameData } from '@root/core/io/GameData';
 import { FormattedDate } from '@components/FormattedDate';
 import { SType } from '@root/core/types/SType';
+import { Scenario } from '@root/pages/ScenarioPage';
 
 interface Props {
   infos: any,
   gameData: GameData
+  scenario?: Scenario
 }
 
 const Tab1Component: React.FC<Props> = ({ infos, gameData }) => {

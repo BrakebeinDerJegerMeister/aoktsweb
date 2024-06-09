@@ -5,7 +5,15 @@ export class U32 extends SNumber {
     constructor() {
         super();
     }
-    _readData(reader: STypeRW, key: string) {
+
+    read(reader: STypeRW):number {
+        let value = reader.dataView.getUint32(reader.index, true);
+        let valueBuffer = new Uint8Array(reader.dataView.buffer, reader.index, this.nbBytes);
+        reader.index += this.nbBytes; 
+        return { "typedValue": value, "rawValue": valueBuffer  };
+    }
+
+    _readData(reader: STypeRW, _key: string) {
         let value = reader.dataView.getUint32(reader.index, true);
         reader.index += this.nbBytes;
         this.setValue(value);
