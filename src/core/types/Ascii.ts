@@ -14,7 +14,7 @@ export class Ascii extends SString {
         let asciiBuffer = new Uint8Array(reader.dataView.buffer, reader.index, alen);
         const asciiDecoder = new TextDecoder();
         reader.index += alen;
-        return { "typedValue": asciiDecoder.decode(asciiBuffer), "rawValue": asciiBuffer }
+        return { "typedValue": asciiDecoder.decode(asciiBuffer), rawValue: asciiBuffer }
     }
 
     getLen() { return typeof this.len == "function" ? this.len() : this.len; }

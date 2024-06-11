@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { ascii } from '@root/core/factories/dataFactories';
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
 
 interface Props {
   subscribe: Function,
@@ -8,11 +9,9 @@ interface Props {
 
 const Version: React.FC<Props> = ({ subscribe }) => {
 
-  const [getValue, setValue] = useState<string>();
+  const {getValue, setValue} = useHeaderSubscription<string>(subscribe,  "version",  ascii(4) );
 
-  useEffect(() => {
-    subscribe("version", ascii(4), getValue, setValue);
-  }, [])
+
 
   return (
     <div>Coucou je suis la version ! <span>{getValue}</span></div>

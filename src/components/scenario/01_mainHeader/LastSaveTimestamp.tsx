@@ -1,4 +1,5 @@
 import { FormattedDate } from '@components/FormattedDate';
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
 import { u32 } from '@root/core/factories/dataFactories';
 import React, { useEffect, useState } from 'react';
 
@@ -8,14 +9,10 @@ interface Props {
 
 const LastSaveTimestamp: React.FC<Props> = ({ subscribe }) => {
 
-  const [getValue, setValue] = useState<number>();
-
-  useEffect(() => {
-    subscribe("lastSaveTimestamp", u32(), getValue, setValue);
-  }, [])
+  const {getValue, setValue} = useHeaderSubscription<string>(subscribe,  "lastSaveTimestamp",  u32() );
 
   return (
-    <><span>{getValue && <FormattedDate timestamp={ getValue * 1000} />}</span></>
+    <span>lastSaveTimestamp : {getValue && <FormattedDate timestamp={ getValue * 1000} />}</span>
   );
 };
 

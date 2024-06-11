@@ -9,7 +9,6 @@ import AppRouter from './maincomponents/AppRouter';
 const App: React.FC = () => {
 
   useEffect(() => {
-    console.clear();
     if (process.env.NODE_ENV === 'development') {
       console.log("Action spécifique au développement");
       //for (const [key, val] of Object.entries(myStructureDescription)) {

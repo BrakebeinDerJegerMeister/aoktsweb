@@ -13,6 +13,7 @@ const Tab2Component: React.FC<Props> = ({ scenario }) => {
       <p>Tab2</p>
         {
           scenario && scenario.mainHeader && Object.entries(scenario.mainHeader).map(([_name, comp], i)=>{
+            //console.log(comp)
             return <div key={i}>{comp}</div>
           })
         }     

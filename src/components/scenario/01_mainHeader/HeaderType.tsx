@@ -1,3 +1,4 @@
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
 import { u32 } from '@root/core/factories/dataFactories';
 import React, { useEffect, useState } from 'react';
 
@@ -7,11 +8,7 @@ interface Props {
 
 const HeaderType: React.FC<Props> = ({ subscribe }) => {
 
-  const [getValue, setValue] = useState<number>();
-
-  useEffect(() => {
-    subscribe("headerType", u32(), getValue, setValue);
-  }, [])
+  const {getValue, setValue} = useHeaderSubscription<string>(subscribe,  "headerType",  u32() );
 
   return (
     <div>HeaderType... <span>{getValue}</span></div>
