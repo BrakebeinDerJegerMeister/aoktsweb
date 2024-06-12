@@ -9,12 +9,12 @@ interface Props {
 
 const Version: React.FC<Props> = ({ subscribe }) => {
 
-  const {getValue, setValue} = useHeaderSubscription<string>(subscribe,  "version",  ascii(4) );
+  const {getValue, setValue, getRawValue, setRawValue} = useHeaderSubscription<string>(subscribe,  "version",  ascii(4) );
 
 
 
   return (
-    <div>Coucou je suis la version ! <span>{getValue}</span></div>
+    <div>Coucou je suis la version ! <span>{getValue} - {getRawValue}</span></div>
   );
 };
 

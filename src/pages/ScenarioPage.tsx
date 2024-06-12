@@ -18,7 +18,7 @@ enum myActionMode {
   "create",
 }
 
-interface FieldConfig {
+export interface FieldConfig {
   fieldName: string,
   type: any;  // Essayez d'utiliser un type plus spécifique ici si possible
   valueGetter: () => any;  // Spécifiez le type de retour si possible
@@ -131,7 +131,7 @@ const ScenarioPage: React.FC = () => {
 
           obj.valueSetter(ret.typedValue);
           obj.rawValueSetter(ret.rawValue);
-          obj.rawValue = Array.from(ret.rawValue);
+          //obj.rawValue = Array.from(ret.rawValue);
           //console.log(obj.valueSetter);
           //console.log(ret.typedValue);
           console.log(ret.rawValue);
