@@ -2,13 +2,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import Tab1Component from '../tabs/Tab1Component_stats';
-import Tab2Component from '../tabs/Tab2Component';
+import Tab1Component from '../components/tabs/Tab1Component_stats';
+import Tab2Component from '../components/tabs/Tab2Component';
 import { FileData, FileInfo } from '../hooks/useFileHandler';
 import { fastReadScenario, readScenario } from '@root/core/io/readScenario';
 import { GameData } from '@root/core/io/GameData';
 import * as MainHeader from '@components/scenario/01_mainHeader';
-import RawDataTab from '@root/tabs/RawDataTab';
+import RawDataTab from '@components/tabs/RawDataTab';
 
 
 enum myActionMode {
