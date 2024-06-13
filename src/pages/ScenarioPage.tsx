@@ -20,11 +20,11 @@ enum myActionMode {
 
 export interface FieldConfig {
   fieldName: string,
-  type: any;  // Essayez d'utiliser un type plus spécifique ici si possible
-  valueGetter: () => any;  // Spécifiez le type de retour si possible
-  valueSetter: React.Dispatch<React.SetStateAction<any>>;  // Définissez le type de paramètre et de retour si possible
-  rawValueGetter: () => Uint8Array;  // Spécifiez le type de retour si possible
-  rawValueSetter: React.Dispatch<React.SetStateAction<Uint8Array>>;  // Définissez le type de paramètre et de retour si possible
+  type: any;
+  valueGetter: () => any;
+  valueSetter: React.Dispatch<React.SetStateAction<any>>;
+  rawValueGetter: () => Uint8Array;
+  rawValueSetter: React.Dispatch<React.SetStateAction<Uint8Array>>;
 }
 
 interface MainHeaderComponents {
@@ -90,7 +90,7 @@ const ScenarioPage: React.FC = () => {
       "headerLength": <MainHeader.HeaderLength subscribe={subscribe} />,
       "headerType": <MainHeader.HeaderType subscribe={subscribe} />,
       "lastSaveTimestamp": <MainHeader.LastSaveTimestamp subscribe={subscribe} />,
-      "instructions": <MainHeader.Instructions />,
+      "instructions": <MainHeader.Instructions subscribe={subscribe} />,
       "individualVictories": <MainHeader.IndividualVictories />,
       "playerCount": <MainHeader.PlayerCount />,
       "value1000": <MainHeader.Value1000 />,
@@ -137,7 +137,7 @@ const ScenarioPage: React.FC = () => {
           console.log(ret.rawValue);
         });
 
-        setMyRealFields({...myFields.current});
+        setMyRealFields({ ...myFields.current });
         setMyAction(myActionMode.none);
         break;
       default:
@@ -214,9 +214,9 @@ const ScenarioPage: React.FC = () => {
               <Tab2Component scenario={myScenario} />
             </TabPanel>
 
-              < TabPanel >
-                <RawDataTab fields={myRealFields} scenario={myScenario} />
-              </TabPanel>
+            < TabPanel >
+              <RawDataTab fields={myRealFields} scenario={myScenario} />
+            </TabPanel>
 
             {/* Ajouter plus de TabPanel selon le contenu de chaque onglet */}
           </TabPanels>

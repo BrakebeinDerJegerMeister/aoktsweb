@@ -1,5 +1,10 @@
 import { SString } from "./SString";
 
+interface ReadResult {
+    typedValue: string; 
+    rawValue: Uint8Array;
+}
+
 export class Ascii extends SString {
     value: string | null;
     len: number | Function;
@@ -9,7 +14,7 @@ export class Ascii extends SString {
         this.len = len;
     }
 
-    read(reader: STypeRW):string {
+    read(reader: STypeRW):ReadResult {
         let alen = this.getLen();
         let asciiBuffer = new Uint8Array(reader.dataView.buffer, reader.index, alen);
         const asciiDecoder = new TextDecoder();

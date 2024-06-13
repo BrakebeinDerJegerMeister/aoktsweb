@@ -1,10 +1,19 @@
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+import { str, u32 } from '@root/core/factories/dataFactories';
+
 import React from 'react';
 
-interface Props {}
+interface Props {
+  subscribe: Function,
+}
 
-const Instructions: React.FC<Props> = () => {
+const Instructions: React.FC<Props> = ({ subscribe }) => {
+
+  const { getValue } = useHeaderSubscription<string>(subscribe, "instructions", str(u32()));  
+
+
   return (
-    <></>
+    <div>Instructions<span>{getValue}</span></div>
   );
 };
 

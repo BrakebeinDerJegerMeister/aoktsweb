@@ -1,19 +1,15 @@
 // src/tabs/RawDataTab.tsx
 
 import { Flex, Text, Tooltip } from '@chakra-ui/react';
-import { FieldConfig/*, Scenario*/ } from '@root/pages/ScenarioPage';
+import { FieldConfig, Scenario } from '@root/pages/ScenarioPage';
 import React from 'react';
 
 interface Props {
-  fields: FieldConfig,
-  //scenario?: Scenario,
+  fields: Record<string, FieldConfig>;
+  scenario?: Scenario,
 }
 
-
 const RawDataTab: React.FC<Props> = ({ fields/*, scenario*/ }) => {
-
-
-
 
   return (
     <>
@@ -23,14 +19,12 @@ const RawDataTab: React.FC<Props> = ({ fields/*, scenario*/ }) => {
           //console.log(comp.rawValue)
           const rawValue = Array.from(comp.rawValueGetter()) as Array<number>;;
           //console.log(comp.rawValueGetter())
-          return rawValue.length && <div key={i}>{_name} - {rawValue.toString()} - {
-            rawValue.map((val, j) => {
-              return <span key={j}>{val.toString(16).padStart(2, '0').toUpperCase()}</span>
-            })
+          return rawValue.length && <div key={i}>{_name} - {/*rawValue.toString()*/} - {
+            // rawValue.map((val, j) => {
+            //   //return <span key={j}>{val.toString(16).padStart(2, '0').toUpperCase()}</span>
+            // })
           }
           </div>
-
-
 
           //return <div key={i}>{"aaa"}</div>;
         })

@@ -2,6 +2,11 @@
 import { SString } from "./SString";
 import { SType } from "./SType";
 
+interface ReadResult {
+    typedValue: string;
+    rawValue: Uint8Array;
+}
+
 export class Str extends SString {
 
     value: string | null;
@@ -14,6 +19,17 @@ export class Str extends SString {
     }
 
     getLen(): SType<number> { return this.len(); }
+
+    read(reader: STypeRW):ReadResult {
+        let alen = this.getLen();
+        console.log("@@ - @@ - @@ - @@");
+        alen = alen.read(reader).typedValue;
+        console.log(alen);
+        let asciiBuffer = new Uint8Array(reader.dataView.buffer, reader.index, alen);
+        const asciiDecoder = new TextDecoder();
+        reader.index += alen;
+        return { "typedValue": asciiDecoder.decode(asciiBuffer), rawValue: asciiBuffer }
+    }
 
     _readData(reader: STypeRW, key: string) {
         let eLen = this.getLen();

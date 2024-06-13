@@ -1,6 +1,6 @@
+import React from 'react';
 import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
 import { u32 } from '@root/core/factories/dataFactories';
-import React, { useEffect, useState } from 'react';
 
 interface Props {
   subscribe: Function,
@@ -8,7 +8,7 @@ interface Props {
 
 const HeaderLength: React.FC<Props> = ({ subscribe }) => {
 
-  const {getValue, setValue} = useHeaderSubscription<string>(subscribe,  "headerLength ",  u32() );
+  const { getValue } = useHeaderSubscription<number>(subscribe, "headerLength ", u32());
 
   return (
     <div>HeaderLength !!! <span>{getValue}</span></div>
