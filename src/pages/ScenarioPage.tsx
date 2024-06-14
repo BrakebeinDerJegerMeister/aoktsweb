@@ -25,6 +25,9 @@ export interface FieldConfig {
   valueSetter: React.Dispatch<React.SetStateAction<any>>;
   rawValueGetter: () => Uint8Array;
   rawValueSetter: React.Dispatch<React.SetStateAction<Uint8Array>>;
+  read: Function;
+  write: Function;
+  create: Function;
 }
 
 interface MainHeaderComponents {
@@ -69,9 +72,11 @@ const ScenarioPage: React.FC = () => {
   }, [location.state]);
 
 
-  const subscribe = function (fieldName: string, type: any, valueGetter: any, valueSetter: any, rawValueGetter: any, rawValueSetter: any) {
 
-    console.log(fieldName, "subscribed");
+
+  const subscribe = function ({fieldName, type, valueGetter, valueSetter, rawValueGetter, rawValueSetter, read, write, create}:FieldConfig) {
+
+    //console.log(fieldName, "subscribed");
 
     myFields.current[fieldName] = {
       "fieldName": fieldName,
@@ -80,6 +85,9 @@ const ScenarioPage: React.FC = () => {
       "valueSetter": valueSetter,
       "rawValueGetter": rawValueGetter,
       "rawValueSetter": rawValueSetter,
+      "read": read,
+      "write": write,
+      "create": create,
     };
 
   }
@@ -90,7 +98,7 @@ const ScenarioPage: React.FC = () => {
     "headerType": <MainHeader.HeaderType subscribe={subscribe} />,
     "lastSaveTimestamp": <MainHeader.LastSaveTimestamp subscribe={subscribe} />,
     "instructions": <MainHeader.Instructions subscribe={subscribe} />,
-    "individualVictories": <MainHeader.IndividualVictories />,
+    "individualVictories": <MainHeader.IndividualVictories subscribe={subscribe} />,
     "playerCount": <MainHeader.PlayerCount />,
     "value1000": <MainHeader.Value1000 />,
     "gameEdition": <MainHeader.GameEdition />,
@@ -103,7 +111,7 @@ const ScenarioPage: React.FC = () => {
   let scenario: Scenario = {
     "mainHeader": mainHeader,
   }
-  
+
   useEffect(() => {
     setMyScenario(scenario);
   }, []);
@@ -114,28 +122,24 @@ const ScenarioPage: React.FC = () => {
 
     //if (!myScenario) return;
 
-    console.log("==============================")
-    console.log(myAction)
+    //console.log("==============================")
+    //console.log(myAction)
     switch (myAction) {
       case myActionMode.read:
-        console.log("@@@@ Read mode activated ! @@@@")
+        //console.log("@@@@ Read mode activated ! @@@@")
         let myMainUint8Array = fileData.arrayBuffer;
         let myReader: STypeRW = {
           "index": 0,
           "dataView": new DataView(myMainUint8Array.buffer),
         }
-        //console.log(myFields)
         Object.entries(myFields.current).forEach(([_key, obj]) => {
-          console.log("@@@", _key);
-          let ret = obj.type().read(myReader);
-          //console.log(obj.valueSetter);
 
-          obj.valueSetter(ret.typedValue);
-          obj.rawValueSetter(ret.rawValue);
-          //obj.rawValue = Array.from(ret.rawValue);
-          //console.log(obj.valueSetter);
-          //console.log(ret.typedValue);
-          console.log(ret.rawValue);
+          //let ret = obj.read(myReader, obj);
+          obj.read(myReader, obj, myFields);
+
+          //obj.valueSetter(ret.typedValue);
+          //obj.rawValueSetter(ret.rawValue);
+
         });
 
         setMyRealFields({ ...myFields.current });
@@ -186,7 +190,7 @@ const ScenarioPage: React.FC = () => {
     setMyData(myData);
     setMyError(undefined);
 
-    console.log("setAction read")
+    //console.log("setAction read")
     setMyAction(myActionMode.read);
 
   }, [fileData]);

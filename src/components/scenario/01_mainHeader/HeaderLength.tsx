@@ -8,7 +8,7 @@ interface Props {
 
 const HeaderLength: React.FC<Props> = ({ subscribe }) => {
 
-  const { getValue } = useHeaderSubscription<number>(subscribe, "headerLength ", u32());
+  const { getValue } = useHeaderSubscription<number>({ subscribe, "fieldName": "headerLength ", "dataType": u32() });
 
   return (
     <div>HeaderLength !!! <span>{getValue}</span></div>

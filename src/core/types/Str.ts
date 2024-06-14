@@ -22,9 +22,9 @@ export class Str extends SString {
 
     read(reader: STypeRW):ReadResult {
         let alen = this.getLen();
-        console.log("@@ - @@ - @@ - @@");
+        //console.log("@@ - @@ - @@ - @@");
         alen = alen.read(reader).typedValue;
-        console.log(alen);
+        //console.log(alen);
         let asciiBuffer = new Uint8Array(reader.dataView.buffer, reader.index, alen);
         const asciiDecoder = new TextDecoder();
         reader.index += alen;

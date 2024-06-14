@@ -16,10 +16,11 @@ const RawDataTab: React.FC<Props> = ({ fields/*, scenario*/ }) => {
       <p>Raw Data</p>
       {
         fields && Object.entries(fields).map(([_name, comp], i) => {
+          if (!comp.rawValue) return;
           //console.log(comp.rawValue)
-          const rawValue = Array.from(comp.rawValueGetter()) as Array<number>;;
+          const rawValue = Array.from(comp.rawValue) as Array<number>;;
           //console.log(comp.rawValueGetter())
-          return rawValue.length && <div key={i}>{_name} - {/*rawValue.toString()*/} - {
+          return rawValue && rawValue.length && <div key={i}>{_name} - {/*rawValue.toString()*/} - {
             // rawValue.map((val, j) => {
             //   //return <span key={j}>{val.toString(16).padStart(2, '0').toUpperCase()}</span>
             // })
@@ -32,7 +33,8 @@ const RawDataTab: React.FC<Props> = ({ fields/*, scenario*/ }) => {
 
       <Flex wrap="wrap">
         {fields && Object.entries(fields).map(([_name, comp], _i: number) => {
-          const rawValue = Array.from(comp.rawValueGetter()) as Array<number>;
+          if (!comp.rawValue) return;
+          const rawValue = Array.from(comp.rawValue) as Array<number>;
           //comp.rawValue.map((val : number, j: number, a: Array<number>) =>
           return rawValue.length && (
             rawValue.map((val: number, j: number, a: Array<number>) => (

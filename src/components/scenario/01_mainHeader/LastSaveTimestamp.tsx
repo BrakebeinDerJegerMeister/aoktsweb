@@ -9,7 +9,7 @@ interface Props {
 
 const LastSaveTimestamp: React.FC<Props> = ({ subscribe }) => {
 
-  const { getValue } = useHeaderSubscription<number>(subscribe, "lastSaveTimestamp", u32());
+  const { getValue } = useHeaderSubscription<number>({ subscribe, "fieldName": "lastSaveTimestamp", "dataType": u32() });
 
   return (
     <span>lastSaveTimestamp : {getValue && <FormattedDate timestamp={getValue * 1000} />}</span>

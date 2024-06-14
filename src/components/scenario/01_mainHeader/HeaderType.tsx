@@ -8,7 +8,7 @@ interface Props {
 
 const HeaderType: React.FC<Props> = ({ subscribe }) => {
 
-  const { getValue } = useHeaderSubscription<number>(subscribe, "headerType", u32());
+  const { getValue } = useHeaderSubscription<number>({subscribe, "fieldName": "headerType", "dataType": u32()});
 
   return (
     <div>HeaderType... <span>{getValue}</span></div>

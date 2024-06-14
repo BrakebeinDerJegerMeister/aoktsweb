@@ -9,7 +9,7 @@ interface Props {
 
 const Instructions: React.FC<Props> = ({ subscribe }) => {
 
-  const { getValue } = useHeaderSubscription<string>(subscribe, "instructions", str(u32()));  
+  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "instructions", "dataType": str(u32()) });
 
 
   return (

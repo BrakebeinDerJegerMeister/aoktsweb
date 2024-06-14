@@ -9,7 +9,7 @@ interface Props {
 
 const Version: React.FC<Props> = ({ subscribe }) => {
 
-  const { getValue } = useHeaderSubscription<string>(subscribe, "version", ascii(4));
+  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "version", "dataType": ascii(4) });
 
 
   return (
