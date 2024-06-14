@@ -84,26 +84,27 @@ const ScenarioPage: React.FC = () => {
 
   }
 
+  let mainHeader: MainHeaderComponents = {
+    "version": <MainHeader.Version subscribe={subscribe} />,
+    "headerLength": <MainHeader.HeaderLength subscribe={subscribe} />,
+    "headerType": <MainHeader.HeaderType subscribe={subscribe} />,
+    "lastSaveTimestamp": <MainHeader.LastSaveTimestamp subscribe={subscribe} />,
+    "instructions": <MainHeader.Instructions subscribe={subscribe} />,
+    "individualVictories": <MainHeader.IndividualVictories />,
+    "playerCount": <MainHeader.PlayerCount />,
+    "value1000": <MainHeader.Value1000 />,
+    "gameEdition": <MainHeader.GameEdition />,
+    "usedSetsCount": <MainHeader.UsedSetsCount />,
+    "usedSets": <MainHeader.UsedSets />,
+    "creatorName": <MainHeader.CreatorName />,
+    "triggerCount": <MainHeader.TriggerCount />,
+    "compressedData": <MainHeader.CompressedData />,
+  }
+  let scenario: Scenario = {
+    "mainHeader": mainHeader,
+  }
+  
   useEffect(() => {
-    let mainHeader: MainHeaderComponents = {
-      "version": <MainHeader.Version subscribe={subscribe} />,
-      "headerLength": <MainHeader.HeaderLength subscribe={subscribe} />,
-      "headerType": <MainHeader.HeaderType subscribe={subscribe} />,
-      "lastSaveTimestamp": <MainHeader.LastSaveTimestamp subscribe={subscribe} />,
-      "instructions": <MainHeader.Instructions subscribe={subscribe} />,
-      "individualVictories": <MainHeader.IndividualVictories />,
-      "playerCount": <MainHeader.PlayerCount />,
-      "value1000": <MainHeader.Value1000 />,
-      "gameEdition": <MainHeader.GameEdition />,
-      "usedSetsCount": <MainHeader.UsedSetsCount />,
-      "usedSets": <MainHeader.UsedSets />,
-      "creatorName": <MainHeader.CreatorName />,
-      "triggerCount": <MainHeader.TriggerCount />,
-      "compressedData": <MainHeader.CompressedData />,
-    }
-    let scenario: Scenario = {
-      "mainHeader": mainHeader,
-    }
     setMyScenario(scenario);
   }, []);
 
