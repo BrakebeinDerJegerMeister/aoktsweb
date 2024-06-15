@@ -1,14 +1,14 @@
 // src/hooks/useHeaderSubscription.ts
 
-import { FieldConfig, dataObject, valueTypes } from '@pages/ScenarioPage';
-import { useState, useEffect, useRef, RefObject } from 'react';
+import { FieldConfig, dataObject, valueTypes } from '@interfaces/scenarioInterfaces';
+import { useState, useEffect, RefObject } from 'react';
 
 export type SubscribeFunction = (config: FieldConfig<valueTypes>) => void;
 
 interface UseHeaderSubscriptionProps {
   subscribe: SubscribeFunction;
   fieldName: string;
-  dataType: () => any;
+  dataClassType: () => any;
   beforeRead?: Function;
   afterRead?: Function;
   beforeWrite?: Function;
@@ -16,16 +16,13 @@ interface UseHeaderSubscriptionProps {
 }
 
 
-export function useHeaderSubscription<T>({ subscribe, fieldName, dataType, beforeRead, afterRead, beforeWrite, afterWrite }: UseHeaderSubscriptionProps) {
+export function useHeaderSubscription<T>({ subscribe, fieldName, dataClassType, beforeRead, afterRead }: UseHeaderSubscriptionProps) {
 
   const [getValue, setValue] = useState<T>();
   const [getRawValue, setRawValue] = useState<Uint8Array>(new Uint8Array());
-  const ref_value = useRef<T>();
-  const ref_rawValue = useRef<Uint8Array>(new Uint8Array());
-
 
   function internalRead(myReader: STypeRW, obj: FieldConfig<valueTypes>, data: RefObject<dataObject>) {
-    let ret = dataType().read(myReader);
+    let ret = dataClassType().read(myReader);
     obj.value = ret.typedValue;
     obj.rawValue = ret.rawValue;
 
@@ -33,10 +30,15 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataType, befor
       const fieldData = data.current[obj.fieldName];
       if (fieldData) {
         fieldData.value = ret.typedValue;
+      } else {
+        throw new Error("@@@ e2");
       }
+    } else {
+      throw new Error("@@@ e1");
     }
 
-    console.log(obj.fieldName, ret.typedValue);
+
+    //console.log(obj.fieldName, ret.typedValue);
     setValue(ret.typedValue);
     setRawValue(ret.rawValue);
   }
@@ -56,22 +58,7 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataType, befor
 
   useEffect(() => {
 
-    const callback_getValue: () => T | undefined = () => ref_value.current;
-    const callback_setValue = (newValue: T) => {
-      ref_value.current = newValue;
-      setValue(newValue);
-    }
-    const callback_getRawValue: () => Uint8Array = () => {
-
-      return ref_rawValue.current
-    };
-    const callback_setRawValue = (newRawValue: React.SetStateAction<Uint8Array>) => {
-
-      ref_rawValue.current = newRawValue as Uint8Array;
-      setRawValue(newRawValue);
-    }
-
-    subscribe({ fieldName, "type": dataType, read, write, create });
+    subscribe({ fieldName, "type": dataClassType, read, write, create });
 
   }, []);
 

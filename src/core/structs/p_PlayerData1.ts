@@ -1,4 +1,4 @@
-import { u32 } from "../factories/dataFactories";
+import { u32 } from "../../utils/dataFactories";
 
 export function p_PlayerData1(o: Map<string, any>, myData:any) {
     o.set("isActive", u32());

@@ -4,26 +4,21 @@ import Header from './maincomponents/Header';
 import Footer from './maincomponents/Footer';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRouter from './maincomponents/AppRouter';
-//import { myStructureDescription } from './core/facades/scenarioFacade';
 
 const App: React.FC = () => {
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log("Action spécifique au développement");
-      //for (const [key, val] of Object.entries(myStructureDescription)) {
-        //console.log(key, val);
-      //}
-      //console.log(myStructureDescription);
     }
     
   }, []);
 
   return (
     <Router>
-      <Flex direction="column" h="100vh">
+      <Flex direction="column" minHeight="100vh">
         <Header />
-        <Flex id="main" flex="1" direction="column" h="100%">
+        <Flex id="main" flexGrow={1}  direction="column">
           <AppRouter />
         </Flex>
         <Footer />

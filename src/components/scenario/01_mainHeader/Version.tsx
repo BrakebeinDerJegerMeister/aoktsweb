@@ -1,15 +1,12 @@
 import React from 'react';
 
-import { ascii } from '@root/core/factories/dataFactories';
+import { ascii } from '@utils/dataFactories';
 import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+import { ScnCompAttribute } from '@root/interfaces';
 
-interface Props {
-  subscribe: Function,
-}
+const Version: React.FC<ScnCompAttribute> = ({ subscribe }) => {
 
-const Version: React.FC<Props> = ({ subscribe }) => {
-
-  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "version", "dataType": ascii(4) });
+  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "version", "dataClassType": ascii(4) });
 
 
   return (

@@ -1,13 +1,11 @@
-import { SubscribeFunction, useHeaderSubscription } from '@hooks/useHeaderSubscription';
-import { dataObject } from '@pages/ScenarioPage';
-import { u32 } from '@root/core/factories/dataFactories';
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+import { dataObject } from '@interfaces/scenarioInterfaces';
+import { ScnCompAttribute } from '@root/interfaces';
+import { u32 } from '@utils/dataFactories';
 import React, { RefObject, useState } from 'react';
 
-interface Props {
-  subscribe: SubscribeFunction;
-}
 
-const IndividualVictories: React.FC<Props> = ({ subscribe }) => {
+const IndividualVictories: React.FC<ScnCompAttribute> = ({ subscribe }) => {
   const [isUsed, setIsUsed] = useState<Boolean>(true);
 
   const beforeRead = function(data:RefObject<dataObject>) {
@@ -24,7 +22,7 @@ const IndividualVictories: React.FC<Props> = ({ subscribe }) => {
   const afterRead = function(_data:RefObject<dataObject>) {
   }
 
-  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "individualVictories", "dataType": u32(), beforeRead, afterRead });
+  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "individualVictories", "dataClassType": u32(), beforeRead, afterRead });
 
 return isUsed && (
     <div>IndividualVictories: <span>{getValue}</span></div>

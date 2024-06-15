@@ -1,5 +1,3 @@
-// tsconfig.json
-
 {
   "compilerOptions": {
     "baseUrl": "src",
@@ -13,6 +11,9 @@
       "@dataTypes/*": [
         "dataTypes/*"
       ],    
+      "@interfaces/*": [
+        "interfaces/*"
+      ],  
       "@pages/*": [
         "pages/*"
       ],    

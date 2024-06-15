@@ -1,14 +1,14 @@
-import { ArrayData } from "../../dataTypes/ArrayData";
-import { ArrayOf } from "../../dataTypes/ArrayOf";
-import { Ascii } from "../../dataTypes/Ascii";
-import { CountOf } from "../../dataTypes/CountOf";
-import { F32 } from "../../dataTypes/F32";
-import { SType } from "../../dataTypes/SType";
-import { Section } from "../../dataTypes/Section";
-import { Str } from "../../dataTypes/Str";
-import { U16 } from "../../dataTypes/U16";
-import { U32 } from "../../dataTypes/U32";
-import { U8 } from "../../dataTypes/U8";
+import { ArrayData } from "../dataTypes/ArrayData";
+import { ArrayOf } from "../dataTypes/ArrayOf";
+import { Ascii } from "../dataTypes/Ascii";
+import { CountOf } from "../dataTypes/CountOf";
+import { F32 } from "../dataTypes/F32";
+import { SType } from "../dataTypes/SType";
+import { Section } from "../dataTypes/Section";
+import { Str } from "../dataTypes/Str";
+import { U16 } from "../dataTypes/U16";
+import { U32 } from "../dataTypes/U32";
+import { U8 } from "../dataTypes/U8";
 
 
 

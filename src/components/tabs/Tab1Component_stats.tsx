@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { GameData } from '@root/core/io/GameData';
 import { FormattedDate } from '@components/FormattedDate';
 import { SType } from '@root/dataTypes/SType';
-import { Scenario } from '@root/pages/ScenarioPage';
+import { Scenario } from '@interfaces/scenarioInterfaces';
 
 interface Props {
   infos: any,

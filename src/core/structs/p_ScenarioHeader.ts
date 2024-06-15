@@ -1,4 +1,4 @@
-import { arrayData, arrayOf, ascii, f32, section, str, u16, u32, u8 } from "../factories/dataFactories";
+import { arrayData, arrayOf, ascii, f32, section, str, u16, u32, u8 } from "../../utils/dataFactories";
 import { p_PlayerData1 } from "./p_PlayerData1";
 
 export function p_ScenarioHeader(o: Map<string, any>, myData:any) {

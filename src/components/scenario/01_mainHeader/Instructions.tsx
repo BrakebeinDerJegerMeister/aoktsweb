@@ -1,15 +1,14 @@
-import { SubscribeFunction, useHeaderSubscription } from '@hooks/useHeaderSubscription';
-import { str, u32 } from '@root/core/factories/dataFactories';
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+import { ScnCompAttribute } from '@root/interfaces';
+import { str, u32 } from '@utils/dataFactories';
 
 import React from 'react';
 
-interface Props {
-  subscribe: SubscribeFunction;
-}
+const Instructions: React.FC<ScnCompAttribute> = ({ 
+  subscribe 
+}) => {
 
-const Instructions: React.FC<Props> = ({ subscribe }) => {
-
-  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "instructions", "dataType": str(u32()) });
+  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "instructions", "dataClassType": str(u32()) });
 
 
   return (

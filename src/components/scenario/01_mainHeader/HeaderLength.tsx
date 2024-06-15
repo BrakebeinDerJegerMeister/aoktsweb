@@ -1,14 +1,11 @@
 import React from 'react';
-import { SubscribeFunction, useHeaderSubscription } from '@hooks/useHeaderSubscription';
-import { u32 } from '@root/core/factories/dataFactories';
+import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+import { u32 } from '@utils/dataFactories';
+import { ScnCompAttribute } from '@root/interfaces';
 
-interface Props {
-  subscribe: SubscribeFunction;
-}
+const HeaderLength: React.FC<ScnCompAttribute> = ({ subscribe }) => {
 
-const HeaderLength: React.FC<Props> = ({ subscribe }) => {
-
-  const { getValue } = useHeaderSubscription<number>({ subscribe, "fieldName": "headerLength ", "dataType": u32() });
+  const { getValue } = useHeaderSubscription<number>({ subscribe, "fieldName": "headerLength ", "dataClassType": u32() });
 
   return (
     <div>HeaderLength !!! <span>{getValue}</span></div>

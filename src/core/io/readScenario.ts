@@ -4,7 +4,7 @@ import { Section } from '../../dataTypes/Section';
 
 import Pako from 'pako';
 
-import { getRoundedVersion } from '../utils/getRoundedVersion';
+import { getRoundedVersion } from '../../utils/getRoundedVersion';
 import { FileData } from '@hooks/useFileHandler';
 import { MainHeaderMap, p_MainHeader } from '../structs/p_MainHeader';
 

@@ -1,6 +1,6 @@
 //src/tabs/Tab2Component.tsx
 
-import { Scenario } from '@root/pages/ScenarioPage';
+import { Scenario } from '@pages/ScenarioPage';
 import React from 'react';
 
 interface Props {

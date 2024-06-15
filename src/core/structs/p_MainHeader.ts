@@ -1,4 +1,4 @@
-import { arrayData, arrayOf, ascii, countOf, str, u32 } from "../factories/dataFactories";
+import { arrayData, arrayOf, ascii, countOf, str, u32 } from "../../utils/dataFactories";
 import { SType } from "../../dataTypes/SType";
 
 

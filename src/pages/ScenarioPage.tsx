@@ -9,7 +9,8 @@ import { fastReadScenario, readScenario } from '@root/core/io/readScenario';
 
 import * as MainHeader from '@components/scenario/01_mainHeader';
 import RawDataTab from '@tabs/RawDataTab';
-import * as dT from "@dataTypes/index";
+import { FieldConfig, MainHeaderComponents, Scenario, dataObject, valueTypes } from '@interfaces/scenarioInterfaces';
+
 
 enum myActionMode {
   "none",
@@ -19,42 +20,7 @@ enum myActionMode {
 }
 
 
-export type valueTypes = dT.U32 | dT.U16 | dT.F32 | dT.Ascii | dT.ArrayData | dT.Str | null;
 
-export interface FieldConfig<valueTypes> {
-  fieldName: string,
-  type: any;
-  value?: valueTypes;
-  rawValue?: Uint8Array | null;
-  read: Function;
-  write: Function;
-  create: Function;
-}
-
-interface MainHeaderComponents {
-  version: JSX.Element;
-  headerLength: JSX.Element;
-  headerType: JSX.Element;
-  lastSaveTimestamp: JSX.Element;
-  instructions: JSX.Element;
-  individualVictories: JSX.Element;
-  playerCount: JSX.Element;
-  value1000: JSX.Element;
-  gameEdition: JSX.Element;
-  usedSetsCount: JSX.Element;
-  usedSets: JSX.Element;
-  creatorName: JSX.Element;
-  triggerCount: JSX.Element;
-  compressedData: JSX.Element;
-}
-
-export interface Scenario {
-  mainHeader: MainHeaderComponents;
-}
-
-export interface dataObject {
-  [key: string] : valueTypes;
-}
 
 const ScenarioPage: React.FC = () => {
   const [infos, setInfos] = useState<FileInfo>();
@@ -210,7 +176,7 @@ const ScenarioPage: React.FC = () => {
               <Tab2Component scenario={myScenario} />
             </TabPanel>
 
-            < TabPanel >
+            <TabPanel>
               <RawDataTab fields={myRealFields} scenario={myScenario} />
             </TabPanel>
 

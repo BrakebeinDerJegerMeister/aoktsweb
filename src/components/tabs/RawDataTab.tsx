@@ -1,7 +1,8 @@
 // src/tabs/RawDataTab.tsx
 
 import { Flex, Text, Tooltip } from '@chakra-ui/react';
-import { FieldConfig, Scenario } from '@root/pages/ScenarioPage';
+import { FieldConfig, Scenario } from '@interfaces/scenarioInterfaces';
+
 import React from 'react';
 
 interface Props {
