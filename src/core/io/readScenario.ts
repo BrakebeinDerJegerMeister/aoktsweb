@@ -1,6 +1,6 @@
 
 import { p_Scenario } from '../structs/p_Scenario';
-import { Section } from '../types/Section';
+import { Section } from '../../dataTypes/Section';
 
 import Pako from 'pako';
 
@@ -14,7 +14,7 @@ import { HeaderTypeError } from '@errors/headerTypeError';
 import { InflateError } from '@errors/inflateError';
 import { ScenarioVersionError } from '@errors/scenarioVersionError';
 import { GameData } from './GameData';
-import { SType } from '../types/SType';
+import { SType } from '../../dataTypes/SType';
 
 
 

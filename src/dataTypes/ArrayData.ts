@@ -1,4 +1,4 @@
-import { SType } from "./SType";
+import { SType } from "@dataTypes/SType";
 
 export class ArrayData extends SType<Uint8Array> {
     value: Uint8Array ;

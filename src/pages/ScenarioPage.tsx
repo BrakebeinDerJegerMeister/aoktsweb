@@ -2,14 +2,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import Tab1Component from '../components/tabs/Tab1Component_stats';
-import Tab2Component from '../components/tabs/Tab2Component';
-import { FileData, FileInfo } from '../hooks/useFileHandler';
+import Tab1Component from "@tabs/Tab1Component_stats";
+import Tab2Component from '@tabs/Tab2Component';
+import { FileData, FileInfo } from '@hooks/useFileHandler';
 import { fastReadScenario, readScenario } from '@root/core/io/readScenario';
-import { GameData } from '@root/core/io/GameData';
-import * as MainHeader from '@components/scenario/01_mainHeader';
-import RawDataTab from '@components/tabs/RawDataTab';
 
+import * as MainHeader from '@components/scenario/01_mainHeader';
+import RawDataTab from '@tabs/RawDataTab';
+import * as dT from "@dataTypes/index";
 
 enum myActionMode {
   "none",
@@ -18,13 +18,14 @@ enum myActionMode {
   "create",
 }
 
-export interface FieldConfig {
+
+export type valueTypes = dT.U32 | dT.U16 | dT.F32 | dT.Ascii | dT.ArrayData | dT.Str | null;
+
+export interface FieldConfig<valueTypes> {
   fieldName: string,
   type: any;
-  valueGetter: () => any;
-  valueSetter: React.Dispatch<React.SetStateAction<any>>;
-  rawValueGetter: () => Uint8Array;
-  rawValueSetter: React.Dispatch<React.SetStateAction<Uint8Array>>;
+  value?: valueTypes;
+  rawValue?: Uint8Array | null;
   read: Function;
   write: Function;
   create: Function;
@@ -51,15 +52,20 @@ export interface Scenario {
   mainHeader: MainHeaderComponents;
 }
 
+export interface dataObject {
+  [key: string] : valueTypes;
+}
+
 const ScenarioPage: React.FC = () => {
   const [infos, setInfos] = useState<FileInfo>();
-  const [myData, setMyData] = useState<GameData>({});
+  const [myData, setMyData] = useState<dataObject>({});
   const [myEerror, setMyError] = useState<Error>();
   const [myScenario, setMyScenario] = useState<Scenario>();
   const [myAction, setMyAction] = useState<myActionMode>(myActionMode.none);
 
-  const myFields = useRef<Record<string, FieldConfig>>({});
-  const [myRealFields, setMyRealFields] = useState<Record<string, FieldConfig>>({});
+  const myFields = useRef<Record<string, FieldConfig<valueTypes>>>({});
+  const [myRealFields, setMyRealFields] = useState<Record<string, FieldConfig<valueTypes>>>({});
+
   const location = useLocation();
 
   const [fileData, setFileData] = useState<FileData>(location.state?.fileData);
@@ -74,17 +80,13 @@ const ScenarioPage: React.FC = () => {
 
 
 
-  const subscribe = function ({fieldName, type, valueGetter, valueSetter, rawValueGetter, rawValueSetter, read, write, create}:FieldConfig) {
-
-    //console.log(fieldName, "subscribed");
+  const subscribe = function ({ fieldName, type, read, write, create }: FieldConfig<valueTypes>) {
 
     myFields.current[fieldName] = {
       "fieldName": fieldName,
+      "value": null,
+      "rawValue": null,
       "type": type,
-      "valueGetter": valueGetter,
-      "valueSetter": valueSetter,
-      "rawValueGetter": rawValueGetter,
-      "rawValueSetter": rawValueSetter,
       "read": read,
       "write": write,
       "create": create,
@@ -118,15 +120,9 @@ const ScenarioPage: React.FC = () => {
 
   useEffect(() => {
 
-    //if (Object.entries(myFields).length == 0) return;
-
-    //if (!myScenario) return;
-
-    //console.log("==============================")
-    //console.log(myAction)
     switch (myAction) {
       case myActionMode.read:
-        //console.log("@@@@ Read mode activated ! @@@@")
+
         let myMainUint8Array = fileData.arrayBuffer;
         let myReader: STypeRW = {
           "index": 0,
@@ -134,11 +130,7 @@ const ScenarioPage: React.FC = () => {
         }
         Object.entries(myFields.current).forEach(([_key, obj]) => {
 
-          //let ret = obj.read(myReader, obj);
           obj.read(myReader, obj, myFields);
-
-          //obj.valueSetter(ret.typedValue);
-          //obj.rawValueSetter(ret.rawValue);
 
         });
 
@@ -155,12 +147,11 @@ const ScenarioPage: React.FC = () => {
     if (!fileData) return;
 
 
-    let myData: GameData = {};
-    //let myHeader;
-    //let myScenario2;
+    let myData: dataObject = {};
+
 
     try {
-      //myHeader = fastReadScenario(fileData, myData);
+
       fastReadScenario(fileData, myData);
     } catch (erreur) {
       console.log(erreur);
@@ -171,7 +162,7 @@ const ScenarioPage: React.FC = () => {
     }
 
     try {
-      //myScenario2 = readScenario(fileData, myData);
+
       readScenario(fileData, myData);
     } catch (erreur) {
       console.log(erreur);
@@ -190,7 +181,7 @@ const ScenarioPage: React.FC = () => {
     setMyData(myData);
     setMyError(undefined);
 
-    //console.log("setAction read")
+
     setMyAction(myActionMode.read);
 
   }, [fileData]);

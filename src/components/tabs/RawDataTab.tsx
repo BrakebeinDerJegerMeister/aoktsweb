@@ -5,7 +5,7 @@ import { FieldConfig, Scenario } from '@root/pages/ScenarioPage';
 import React from 'react';
 
 interface Props {
-  fields: Record<string, FieldConfig>;
+  fields: Record<string, FieldConfig<any>>;
   scenario?: Scenario,
 }
 

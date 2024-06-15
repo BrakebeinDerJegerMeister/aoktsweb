@@ -1,7 +1,9 @@
-import { FieldConfig } from '@root/pages/ScenarioPage';
-import { useState, useEffect, useRef } from 'react';
+// src/hooks/useHeaderSubscription.ts
 
-type SubscribeFunction = (config: FieldConfig) => void;
+import { FieldConfig, dataObject, valueTypes } from '@pages/ScenarioPage';
+import { useState, useEffect, useRef, RefObject } from 'react';
+
+export type SubscribeFunction = (config: FieldConfig<valueTypes>) => void;
 
 interface UseHeaderSubscriptionProps {
   subscribe: SubscribeFunction;
@@ -13,6 +15,7 @@ interface UseHeaderSubscriptionProps {
   afterWrite?: Function;
 }
 
+
 export function useHeaderSubscription<T>({ subscribe, fieldName, dataType, beforeRead, afterRead, beforeWrite, afterWrite }: UseHeaderSubscriptionProps) {
 
   const [getValue, setValue] = useState<T>();
@@ -21,17 +24,24 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataType, befor
   const ref_rawValue = useRef<Uint8Array>(new Uint8Array());
 
 
-  function internalRead(myReader: STypeRW, obj: FieldConfig, data: Object) {
+  function internalRead(myReader: STypeRW, obj: FieldConfig<valueTypes>, data: RefObject<dataObject>) {
     let ret = dataType().read(myReader);
     obj.value = ret.typedValue;
     obj.rawValue = ret.rawValue;
-    data.current[obj.fieldName].value = ret.typedValue;
+
+    if (data.current) {
+      const fieldData = data.current[obj.fieldName];
+      if (fieldData) {
+        fieldData.value = ret.typedValue;
+      }
+    }
+
     console.log(obj.fieldName, ret.typedValue);
     setValue(ret.typedValue);
     setRawValue(ret.rawValue);
   }
 
-  function read(myReader: STypeRW, obj: FieldConfig, data: Object) {
+  function read(myReader: STypeRW, obj: FieldConfig<any>, data: RefObject<dataObject>) {
     (!beforeRead || beforeRead(data)) && internalRead(myReader,obj, data);
     if (afterRead) { afterRead(data); }
   }
@@ -61,7 +71,7 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataType, befor
       setRawValue(newRawValue);
     }
 
-    subscribe({ fieldName, "type": dataType, "valueGetter": callback_getValue, "valueSetter": callback_setValue, "rawValueGetter": callback_getRawValue, "rawValueSetter": callback_setRawValue, read, write, create });
+    subscribe({ fieldName, "type": dataType, read, write, create });
 
   }, []);
 

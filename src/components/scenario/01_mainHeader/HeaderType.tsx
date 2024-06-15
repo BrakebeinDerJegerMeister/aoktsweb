@@ -1,9 +1,9 @@
-import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+import { SubscribeFunction, useHeaderSubscription } from '@hooks/useHeaderSubscription';
 import { u32 } from '@root/core/factories/dataFactories';
 import React from 'react';
 
 interface Props {
-  subscribe: Function,
+  subscribe: SubscribeFunction;
 }
 
 const HeaderType: React.FC<Props> = ({ subscribe }) => {

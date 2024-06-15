@@ -1,5 +1,5 @@
 import { arrayData, arrayOf, ascii, countOf, str, u32 } from "../factories/dataFactories";
-import { SType } from "../types/SType";
+import { SType } from "../../dataTypes/SType";
 
 
 type MainHeaderMapValue<K extends keyof MainHeaderMapOptions> = MainHeaderMapOptions[K] | (() => MainHeaderMapOptions[K]);
