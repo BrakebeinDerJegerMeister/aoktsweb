@@ -126,7 +126,7 @@ const ScenarioPage: React.FC = () => {
       }
       return;
     }
-
+/*
     try {
 
       readScenario(fileData, myData);
@@ -137,7 +137,7 @@ const ScenarioPage: React.FC = () => {
       }
       return;
     }
-
+*/
     setInfos({
       "fileName": fileData.fileName,
       "fileSize": fileData.fileSize,
