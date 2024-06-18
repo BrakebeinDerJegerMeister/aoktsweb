@@ -14,10 +14,10 @@ const HomePage: React.FC = () => {
       <Center>
       <Flex direction={['column', 'column', 'row']} wrap="wrap" justifyContent="space-evenly">
         {[
-          { src: 'public/ageicons/DLC/IconeExtensionAoE2_TheAgeOfKings.webp', title: 'Age of Kings' },
-          { src: 'public/ageicons/DLC/IconeExtensionAoE2_TheConquerors.webp', title: 'The Conquerors' },
-          { src: 'public/ageicons/DLC/IconeExtensionAoE2_HDEdition.webp', title: '2013 HD' },
-          { src: 'public/ageicons/DLC/IconeExtensionAoE2_DefinitiveEdition.webp', title: 'Definitive Edition' }
+          { src: '/ageicons/DLC/IconeExtensionAoE2_TheAgeOfKings.webp', title: 'Age of Kings' },
+          { src: '/ageicons/DLC/IconeExtensionAoE2_TheConquerors.webp', title: 'The Conquerors' },
+          { src: '/ageicons/DLC/IconeExtensionAoE2_HDEdition.webp', title: '2013 HD' },
+          { src: '/ageicons/DLC/IconeExtensionAoE2_DefinitiveEdition.webp', title: 'Definitive Edition' }
         ].map(item => (
 <Flex key={item.title}
                 direction="column"

@@ -4,12 +4,13 @@ import { useLocation } from 'react-router-dom';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import Tab1Component from "@tabs/Tab1Component_stats";
 import Tab2Component from '@tabs/Tab2Component';
-import { FileData, FileInfo } from '@hooks/useFileHandler';
-import { fastReadScenario, readScenario } from '@root/core/io/readScenario';
+import { FileData } from '@hooks/useFileHandler';
+import { fastReadScenario } from '@root/core/io/readScenario';
 
 import * as MainHeader from '@components/scenario/01_mainHeader';
 import RawDataTab from '@tabs/RawDataTab';
-import { FieldConfig, MainHeaderComponents, Scenario, dataObject, valueTypes } from '@interfaces/scenarioInterfaces';
+import { FieldConfig, MainHeaderComponents, Scenario, valueTypes } from '@interfaces/scenarioInterfaces';
+import { GameData } from '@root/core/io/GameData';
 
 
 enum myActionMode {
@@ -23,8 +24,7 @@ enum myActionMode {
 
 
 const ScenarioPage: React.FC = () => {
-  const [infos, setInfos] = useState<FileInfo>();
-  const [myData, setMyData] = useState<dataObject>({});
+  const [myData, setMyData] = useState<GameData>();
   const [myEerror, setMyError] = useState<Error>();
   const [myScenario, setMyScenario] = useState<Scenario>();
   const [myAction, setMyAction] = useState<myActionMode>(myActionMode.none);
@@ -112,8 +112,8 @@ const ScenarioPage: React.FC = () => {
   useEffect(() => {
     if (!fileData) return;
 
-
-    let myData: dataObject = {};
+    console.log(fileData)
+    let myData = {} as GameData;
 
 
     try {
@@ -126,23 +126,6 @@ const ScenarioPage: React.FC = () => {
       }
       return;
     }
-/*
-    try {
-
-      readScenario(fileData, myData);
-    } catch (erreur) {
-      console.log(erreur);
-      if (erreur instanceof Error) {
-        setMyError(erreur);
-      }
-      return;
-    }
-*/
-    setInfos({
-      "fileName": fileData.fileName,
-      "fileSize": fileData.fileSize,
-      "fileType": fileData.fileType,
-    });
 
     setMyData(myData);
     setMyError(undefined);
@@ -170,7 +153,7 @@ const ScenarioPage: React.FC = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <Tab1Component infos={infos} gameData={myData} scenario={myScenario} />
+              <Tab1Component gameData={myData} scenario={myScenario} />
             </TabPanel>
             <TabPanel>
               <Tab2Component scenario={myScenario} />

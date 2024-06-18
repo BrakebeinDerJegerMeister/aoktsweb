@@ -1,4 +1,5 @@
 import * as dT from "@dataTypes/index";
+import { UncompressedHeader } from "@root/core/io/readScenario";
 
 export type valueTypes = dT.U32 | dT.U16 | dT.F32 | dT.Ascii | dT.ArrayData | dT.Str | null;
 
@@ -33,6 +34,3 @@ export interface Scenario {
   mainHeader: MainHeaderComponents;
 }
 
-export interface dataObject {
-  [key: string] : valueTypes;
-}
