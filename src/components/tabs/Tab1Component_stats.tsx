@@ -2,15 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import { GameData } from '@root/core/io/GameData';
 import { FormattedDate } from '@components/FormattedDate';
-import { Scenario } from '@interfaces/scenarioInterfaces';
+import { ScenarioComponents } from '@interfaces/scenarioInterfaces';
 
 interface Props {
-  gameData?: GameData
-  scenario?: Scenario
+  gameData?: GameData,
+  scenario?: ScenarioComponents,
 }
 
-const Tab1Component: React.FC<Props> = ({ gameData }) => {
+const Tab1Component: React.FC<Props> = ({ gameData, scenario }) => {
 
+  //console.log("Tab 1");
   const [dataToDownload, setDataToDownload] = useState<Uint8Array>();
 
   const downloadData = () => {
@@ -38,7 +39,7 @@ const Tab1Component: React.FC<Props> = ({ gameData }) => {
   return (
     <div>
       {
-        gameData && gameData.uncompressedHeader &&
+        gameData && scenario && 
         <div>
           <ul>
             <li>Version : {gameData.uncompressedHeader.version}</li>
@@ -47,12 +48,15 @@ const Tab1Component: React.FC<Props> = ({ gameData }) => {
             <br></br>
             <li>Game Edition : {gameData.uncompressedHeader.gameEdition}</li>
             <li>Used Sets Count : {gameData.uncompressedHeader.usedSetsCount}</li>
-            <li>Used Sets : {gameData.uncompressedHeader.usedSets?.map((el: number, i: number) => {
+            <li>Used Sets : {gameData.uncompressedHeader?.usedSets?.map((el: number, i: number) => {
               return <p key={i}>{el}</p>
             })}</li>
             <br></br>
             <li>Date : {gameData.uncompressedHeader.lastSaveTimestamp && <FormattedDate timestamp={gameData.uncompressedHeader.lastSaveTimestamp * 1000} />}</li>
             <li>Header Type : {gameData.uncompressedHeader.headerType}</li>
+            <li>File Name : {gameData.fileName}</li>
+            <li>File Extension : {gameData.fileExtension}</li>
+            <li>File BaseName : {gameData.baseName}</li>
             <li>File Size : {gameData.fileSize}</li>
           </ul>
         </div>

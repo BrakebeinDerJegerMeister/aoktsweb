@@ -1,22 +1,26 @@
 //src/tabs/Tab2Component.tsx
 
-import { Scenario } from '@pages/ScenarioPage';
+import { ScenarioComponents } from '@interfaces/scenarioInterfaces';
+import { GameData } from '@root/core/io/GameData';
 import React from 'react';
 
 interface Props {
-  scenario?: Scenario,
+  gameData?: GameData,
+  scenario?: ScenarioComponents,
 }
 
-const Tab2Component: React.FC<Props> = ({ scenario }) => {
+const Tab2Component: React.FC<Props> = ({ gameData, scenario }) => {
+
+
   return (
     <>
       <p>Tab2</p>
-        {
-          scenario && scenario.mainHeader && Object.entries(scenario.mainHeader).map(([_name, comp], i)=>{
-            //console.log(comp)
-            return <div key={i}>{comp}</div>
-          })
-        }     
+      {
+        gameData && gameData.uncompressedHeader && Object.entries(gameData.uncompressedHeader).map(([name, comp], i) => {
+          //console.log("Tab 2");
+          if (name != "compressedData") return <div key={i}>{comp}</div>
+        })
+      }
     </>
   );
 };

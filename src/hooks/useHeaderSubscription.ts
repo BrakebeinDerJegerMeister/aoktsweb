@@ -3,7 +3,6 @@
 import { FieldConfig, valueTypes } from '@interfaces/scenarioInterfaces';
 import { GameData } from '@root/core/io/GameData';
 import { useState, useEffect, RefObject } from 'react';
-import { ParamKeyValuePair } from 'react-router-dom';
 
 export type SubscribeFunction = (config: FieldConfig<valueTypes>) => void;
 
@@ -23,21 +22,21 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataClassType, 
   const [getValue, setValue] = useState<T>();
   const [getRawValue, setRawValue] = useState<Uint8Array>(new Uint8Array());
 
-  function internalRead(myReader: STypeRW, obj: FieldConfig<valueTypes>/*, data: RefObject<GameData>*/) {
+  function internalRead(myReader: STypeRW, obj: FieldConfig<valueTypes>, data: RefObject<GameData>) {
     let ret = dataClassType().read(myReader);
     obj.value = ret.typedValue;
     obj.rawValue = ret.rawValue;
 
-    /*if (data.current) {
+    if (data.current) {
       const fieldData = data.current[obj.fieldName];
       if (fieldData) {
-        //fieldData.value = ret.typedValue;
+        fieldData.value = ret.typedValue;
       } else {
         throw new Error("@@@ e2");
       }
     } else {
       throw new Error("@@@ e1");
-    }*/
+    }
 
 
     //console.log(obj.fieldName, ret.typedValue);
@@ -46,7 +45,7 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataClassType, 
   }
 
   function read(myReader: STypeRW, obj: FieldConfig<any>, data: RefObject<GameData>) {
-    (!beforeRead || beforeRead(data)) && internalRead(myReader,obj/*, data*/);
+    (!beforeRead || beforeRead(data)) && internalRead(myReader,obj, data);
     if (afterRead) { afterRead(data); }
   }
 

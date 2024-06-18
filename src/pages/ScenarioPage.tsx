@@ -9,8 +9,9 @@ import { fastReadScenario } from '@root/core/io/readScenario';
 
 import * as MainHeader from '@components/scenario/01_mainHeader';
 import RawDataTab from '@tabs/RawDataTab';
-import { FieldConfig, MainHeaderComponents, Scenario, valueTypes } from '@interfaces/scenarioInterfaces';
+import { FieldConfig, MainHeaderComponents, ScenarioComponents, valueTypes } from '@interfaces/scenarioInterfaces';
 import { GameData } from '@root/core/io/GameData';
+import { useHeaderSubscription2 } from '@hooks/useHeaderSubscription2';
 
 
 enum myActionMode {
@@ -24,10 +25,12 @@ enum myActionMode {
 
 
 const ScenarioPage: React.FC = () => {
+
   const [myData, setMyData] = useState<GameData>();
   const [myEerror, setMyError] = useState<Error>();
-  const [myScenario, setMyScenario] = useState<Scenario>();
+  const [myScenario, setMyScenario] = useState<ScenarioComponents>();
   const [myAction, setMyAction] = useState<myActionMode>(myActionMode.none);
+  const [mySubscriber, setMySubscriber]=useState({});
 
   const myFields = useRef<Record<string, FieldConfig<valueTypes>>>({});
   const [myRealFields, setMyRealFields] = useState<Record<string, FieldConfig<valueTypes>>>({});
@@ -44,7 +47,7 @@ const ScenarioPage: React.FC = () => {
   }, [location.state]);
 
 
-
+  const subscriber = {};
 
   const subscribe = function ({ fieldName, type, read, write, create }: FieldConfig<valueTypes>) {
 
@@ -60,8 +63,8 @@ const ScenarioPage: React.FC = () => {
 
   }
 
-  let mainHeader: MainHeaderComponents = {
-    "version": <MainHeader.Version subscribe={subscribe} />,
+  let uncompressedHeaderFields: MainHeaderComponents = {
+    "version": <MainHeader.Version subscribe={subscribe} subscribe2={useHeaderSubscription2(setMySubscriber, "version")}/>,
     "headerLength": <MainHeader.HeaderLength subscribe={subscribe} />,
     "headerType": <MainHeader.HeaderType subscribe={subscribe} />,
     "lastSaveTimestamp": <MainHeader.LastSaveTimestamp subscribe={subscribe} />,
@@ -76,8 +79,8 @@ const ScenarioPage: React.FC = () => {
     "triggerCount": <MainHeader.TriggerCount />,
     "compressedData": <MainHeader.CompressedData />,
   }
-  let scenario: Scenario = {
-    "mainHeader": mainHeader,
+  let scenario: ScenarioComponents = {
+    "uncompressedHeader": uncompressedHeaderFields,
   }
 
   useEffect(() => {
@@ -85,10 +88,9 @@ const ScenarioPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-
     switch (myAction) {
       case myActionMode.read:
-
+      console.log(mySubscriber);
         let myMainUint8Array = fileData.arrayBuffer;
         let myReader: STypeRW = {
           "index": 0,
@@ -99,12 +101,14 @@ const ScenarioPage: React.FC = () => {
           obj.read(myReader, obj, myFields);
 
         });
-
+        console.log(myFields.current)
+        console.log(scenario.uncompressedHeader.version)
         setMyRealFields({ ...myFields.current });
         setMyAction(myActionMode.none);
         break;
       default:
     }
+    console.log("action terminée");
   }, [myAction]);
 
 
@@ -147,23 +151,20 @@ const ScenarioPage: React.FC = () => {
         <Tabs defaultIndex={0} variant="enclosed" colorScheme="green">
           <TabList flexWrap="wrap">
             <Tab>Stats</Tab>
-            <Tab>Tab 2</Tab>
+            <Tab>Messages</Tab>
             <Tab>Raw Data</Tab>
-            {/* Ajouter plus de Tab selon le besoin */}
           </TabList>
           <TabPanels>
             <TabPanel>
               <Tab1Component gameData={myData} scenario={myScenario} />
             </TabPanel>
             <TabPanel>
-              <Tab2Component scenario={myScenario} />
+              <Tab2Component gameData={myData} scenario={myScenario} />
             </TabPanel>
-
             <TabPanel>
-              <RawDataTab fields={myRealFields} scenario={myScenario} />
+              <RawDataTab fields={myRealFields} />
             </TabPanel>
 
-            {/* Ajouter plus de TabPanel selon le contenu de chaque onglet */}
           </TabPanels>
         </Tabs>
 
