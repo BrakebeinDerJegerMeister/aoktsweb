@@ -68,7 +68,7 @@ export function fastReadScenario(fileData: FileData, myData: GameData) {
         uncompressedHeader.value1000 = get_u32();
         uncompressedHeader.gameEdition = get_u32();
         uncompressedHeader.usedSetsCount = get_u32();
-        console.log(uncompressedHeader.usedSetsCount);
+        //console.log(uncompressedHeader.usedSetsCount);
         uncompressedHeader.usedSets = [];
         for (let i=0; i<uncompressedHeader.usedSetsCount; i++) {
             const value = get_u32();

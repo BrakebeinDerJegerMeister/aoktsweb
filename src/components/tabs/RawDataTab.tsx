@@ -16,7 +16,7 @@ const RawDataTab: React.FC<Props> = ({ fields/*, scenario*/ }) => {
 
   return (
     <>
-      <p>Raw Data</p>
+      {/* <p>Raw Data</p>
 
       <Flex wrap="wrap">
         {fields && Object.entries(fields).map(([_name, comp], _i: number) => {
@@ -43,7 +43,7 @@ const RawDataTab: React.FC<Props> = ({ fields/*, scenario*/ }) => {
             ))
           )
         })}
-      </Flex>
+      </Flex> */}
     </>
   );
 };

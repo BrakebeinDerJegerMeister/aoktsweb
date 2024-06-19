@@ -39,7 +39,7 @@ const Tab1Component: React.FC<Props> = ({ gameData, scenario }) => {
   return (
     <div>
       {
-        gameData && scenario && 
+        gameData &&  
         <div>
           <ul>
             <li>Version : {gameData.uncompressedHeader.version}</li>

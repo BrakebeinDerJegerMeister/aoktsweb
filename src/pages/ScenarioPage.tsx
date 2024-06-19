@@ -12,6 +12,7 @@ import RawDataTab from '@tabs/RawDataTab';
 import { FieldConfig, MainHeaderComponents, ScenarioComponents, valueTypes } from '@interfaces/scenarioInterfaces';
 import { GameData } from '@root/core/io/GameData';
 import { useHeaderSubscription2 } from '@hooks/useHeaderSubscription2';
+import { ascii, str, u32 } from '@utils/dataFactories';
 
 
 enum myActionMode {
@@ -19,6 +20,7 @@ enum myActionMode {
   "read",
   "write",
   "create",
+  "display",
 }
 
 
@@ -30,10 +32,7 @@ const ScenarioPage: React.FC = () => {
   const [myEerror, setMyError] = useState<Error>();
   const [myScenario, setMyScenario] = useState<ScenarioComponents>();
   const [myAction, setMyAction] = useState<myActionMode>(myActionMode.none);
-  const [mySubscriber, setMySubscriber]=useState({});
-
-  const myFields = useRef<Record<string, FieldConfig<valueTypes>>>({});
-  const [myRealFields, setMyRealFields] = useState<Record<string, FieldConfig<valueTypes>>>({});
+  const mySubscriber = useRef({});
 
   const location = useLocation();
 
@@ -47,37 +46,24 @@ const ScenarioPage: React.FC = () => {
   }, [location.state]);
 
 
-  const subscriber = {};
 
-  const subscribe = function ({ fieldName, type, read, write, create }: FieldConfig<valueTypes>) {
 
-    myFields.current[fieldName] = {
-      "fieldName": fieldName,
-      "value": null,
-      "rawValue": null,
-      "type": type,
-      "read": read,
-      "write": write,
-      "create": create,
-    };
-
-  }
 
   let uncompressedHeaderFields: MainHeaderComponents = {
-    "version": <MainHeader.Version subscribe={subscribe} subscribe2={useHeaderSubscription2(setMySubscriber, "version")}/>,
-    "headerLength": <MainHeader.HeaderLength subscribe={subscribe} />,
-    "headerType": <MainHeader.HeaderType subscribe={subscribe} />,
-    "lastSaveTimestamp": <MainHeader.LastSaveTimestamp subscribe={subscribe} />,
-    "instructions": <MainHeader.Instructions subscribe={subscribe} />,
-    "individualVictories": <MainHeader.IndividualVictories subscribe={subscribe} />,
-    "playerCount": <MainHeader.PlayerCount />,
-    "value1000": <MainHeader.Value1000 />,
-    "gameEdition": <MainHeader.GameEdition />,
-    "usedSetsCount": <MainHeader.UsedSetsCount />,
-    "usedSets": <MainHeader.UsedSets />,
-    "creatorName": <MainHeader.CreatorName />,
-    "triggerCount": <MainHeader.TriggerCount />,
-    "compressedData": <MainHeader.CompressedData />,
+    "version": <MainHeader.Version mySubscriber={mySubscriber} />,
+    "headerLength": <MainHeader.HeaderLength mySubscriber={mySubscriber}/>,
+    // "headerType": <MainHeader.HeaderType mySubscriber={mySubscriber}/>,
+    // "lastSaveTimestamp": <MainHeader.LastSaveTimestamp  mySubscriber={mySubscriber}/>,
+    // "instructions": <MainHeader.Instructions  mySubscriber={mySubscriber}/>,
+    // "individualVictories": <MainHeader.IndividualVictories  mySubscriber={mySubscriber}/>,
+    // "playerCount": <MainHeader.PlayerCount />,
+    // "value1000": <MainHeader.Value1000 />,
+    // "gameEdition": <MainHeader.GameEdition />,
+    // "usedSetsCount": <MainHeader.UsedSetsCount />,
+    // "usedSets": <MainHeader.UsedSets />,
+    // "creatorName": <MainHeader.CreatorName />,
+    // "triggerCount": <MainHeader.TriggerCount />,
+    // "compressedData": <MainHeader.CompressedData />,
   }
   let scenario: ScenarioComponents = {
     "uncompressedHeader": uncompressedHeaderFields,
@@ -90,25 +76,28 @@ const ScenarioPage: React.FC = () => {
   useEffect(() => {
     switch (myAction) {
       case myActionMode.read:
-      console.log(mySubscriber);
+
+        //console.log(mySubscriber);
+
         let myMainUint8Array = fileData.arrayBuffer;
-        let myReader: STypeRW = {
+
+
+        let myReader2: STypeRW = {
           "index": 0,
           "dataView": new DataView(myMainUint8Array.buffer),
         }
-        Object.entries(myFields.current).forEach(([_key, obj]) => {
 
-          obj.read(myReader, obj, myFields);
-
+        Object.entries(mySubscriber.current).forEach(([_key, subscriberElement]) => {
+          subscriberElement.read(myReader2);
+          console.log(subscriberElement);
+          
         });
-        console.log(myFields.current)
-        console.log(scenario.uncompressedHeader.version)
-        setMyRealFields({ ...myFields.current });
+
         setMyAction(myActionMode.none);
+        console.log("@@ Action READ terminée");
         break;
       default:
     }
-    console.log("action terminée");
   }, [myAction]);
 
 
@@ -130,7 +119,6 @@ const ScenarioPage: React.FC = () => {
       }
       return;
     }
-
     setMyData(myData);
     setMyError(undefined);
 
@@ -152,7 +140,7 @@ const ScenarioPage: React.FC = () => {
           <TabList flexWrap="wrap">
             <Tab>Stats</Tab>
             <Tab>Messages</Tab>
-            <Tab>Raw Data</Tab>
+            {/* <Tab>Raw Data</Tab> */}
           </TabList>
           <TabPanels>
             <TabPanel>
@@ -161,9 +149,9 @@ const ScenarioPage: React.FC = () => {
             <TabPanel>
               <Tab2Component gameData={myData} scenario={myScenario} />
             </TabPanel>
-            <TabPanel>
+            {/* <TabPanel>
               <RawDataTab fields={myRealFields} />
-            </TabPanel>
+            </TabPanel> */}
 
           </TabPanels>
         </Tabs>

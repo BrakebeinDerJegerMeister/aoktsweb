@@ -1,14 +1,17 @@
 // src/hooks/useHeaderSubscription.ts
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 
 
 
-export function useHeaderSubscription2(subscriber, name) {
+export function useHeaderSubscription2(mySubscriber: any, name: string, dataClassType: Function) {
 
-  const [getValue2, setValue2] = useState<any>({ value: null });
-  const [getRawValue2, setRawValue2] = useState<any>({ value: null });
+  const [getValue2, setValue2] = useState<any>();
+
+  const [getRawValue2, setRawValue2] = useState<any>();
+
+  const [getDataClassType, setDataClassType] = useState<string>(name);
 
   const [beforeReadHook, setBeforeReadHook] = useState();
   const [afterReadHook, setAfterReadHook] = useState();
@@ -18,30 +21,20 @@ export function useHeaderSubscription2(subscriber, name) {
   const [afterCreateHook, setAfterCreateHook] = useState();
 
 
-  /*function internalRead(myReader: STypeRW, obj: FieldConfig<valueTypes>, data: RefObject<GameData>) {
+  function internalRead(myReader: STypeRW, obj: any, data: any) {
     let ret = dataClassType().read(myReader);
-    obj.value = ret.typedValue;
-    obj.rawValue = ret.rawValue;
 
-    if (data.current) {
-      const fieldData = data.current[obj.fieldName];
-      if (fieldData) {
-        fieldData.value = ret.typedValue;
-      } else {
-        throw new Error("@@@ e2");
-      }
-    } else {
-      throw new Error("@@@ e1");
-    }
+    mySubscriber.current[name].value2 = ret.typedValue;
+    mySubscriber.current[name].rawValue2 = ret.rawValue;
 
-
-    //console.log(obj.fieldName, ret.typedValue);
-    setValue(ret.typedValue);
-    setRawValue(ret.rawValue);
+    setValue2(ret.typedValue);
+    setRawValue2(ret.rawValue);
   }
 
-  */
-  function read() {
+
+  function read(myReader: STypeRW, obj: any, data: any) {
+    //console.log(name, dataClassType);
+    internalRead(myReader, obj, data);
     /*(!beforeRead || beforeRead(data)) && internalRead(myReader,obj, data);
     if (afterRead) { afterRead(data); }*/
   }
@@ -55,23 +48,28 @@ export function useHeaderSubscription2(subscriber, name) {
   }
 
   useEffect(() => {
-    let copy = { ...subscriber };
-    copy[name] = {
-      getValue2,
-      setValue2,
-      getRawValue2,
-      setRawValue2,
-      setBeforeReadHook,
-      setAfterReadHook,
-      setBeforeWriteHook,
-      setAfterWriteHook,
-      setBeforeCreateHook,
-      setAfterCreateHook,
-      read,
-      write,
-      create,
-    };
-    subscriber(copy);
+    //console.log("====> ",name, mySubscriber)
+    if (name) {
+      //let subscriberCopy = { ...mySubscriber };
+      //subscriberCopy[name] = {
+      mySubscriber.current[name] = {
+        getValue2,
+        setValue2,
+        getRawValue2,
+        setRawValue2,
+        setBeforeReadHook,
+        setAfterReadHook,
+        setBeforeWriteHook,
+        setAfterWriteHook,
+        setBeforeCreateHook,
+        setAfterCreateHook,
+        read,
+        write,
+        create,
+        name,
+      };
+      //setMySubscriber(subscriberCopy);
+    }
   }, []);
 
 

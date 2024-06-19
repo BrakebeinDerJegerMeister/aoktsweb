@@ -7,12 +7,12 @@ import AppRouter from './maincomponents/AppRouter';
 
 const App: React.FC = () => {
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log("Action spécifique au développement");
-    }
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV === 'development') {
+  //     console.log("Action spécifique au développement");
+  //   }
     
-  }, []);
+  // }, []);
 
   return (
     <Router>

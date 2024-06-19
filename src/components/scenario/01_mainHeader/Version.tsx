@@ -1,24 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { ascii } from '@utils/dataFactories';
-import { useHeaderSubscription } from '@hooks/useHeaderSubscription';
+
 import { ScnCompAttribute } from '@root/interfaces';
+import { ascii } from '@utils/dataFactories';
 
 
-const Version: React.FC<ScnCompAttribute> = ({ subscribe, subscribe2 }) => {
+const Version: React.FC<ScnCompAttribute> = ({ mySubscriber }) => {
 
-  const { getValue } = useHeaderSubscription<string>({ subscribe, "fieldName": "version", "dataClassType": ascii(4) });
-  const { getValue2, setValue2, getRawValue2, setRawValue2 } = subscribe2;
+ 
+  const [getValue2, setValue2] = useState<any>();
+  const [getRawValue2, setRawValue2] = useState<any>();
 
-  useEffect(()=>{
-    console.log(getValue2);
-    console.log(setValue2);
-    console.log(getRawValue2);
-    console.log(setRawValue2);
-  },[]);
+  const value = useRef<any>();
+  const rawValue = useRef<any>();
+
+  const type = useRef<any>(ascii(4));
+
+  const read = function(myReader:any) {
+    let ret = type.current().read(myReader);
+
+    value.current = ret.typedValue;
+    rawValue.current = ret.rawValue;
+
+    console.log(ret.typedValue)
+    setValue2(ret.typedValue);
+    setRawValue2(ret.rawValue);
+  }
+
+  useEffect(() => {
+    mySubscriber.current["version"] = {
+      name: "version",
+      //type: type.current,
+      hooks: { getValue2, setValue2, getRawValue2, setRawValue2, value, rawValue },
+      read: read,
+    };
+
+    // Fonction appelée au démontage du composant !!!!!!
+    return () => {
+      delete mySubscriber.current["version"];
+    };
+  }, [getValue2, setValue2, getRawValue2, setRawValue2]);
+
 
   return (
-    <div>Coucou je suis la version ! <span>{getValue}</span></div>
+    <div>Coucou je suis la version ! <span>{getValue2}</span></div>
   );
 };
 
