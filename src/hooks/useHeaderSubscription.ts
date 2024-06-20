@@ -45,7 +45,7 @@ export function useHeaderSubscription<T>({ subscribe, fieldName, dataClassType, 
   }
 
   function read(myReader: STypeRW, obj: FieldConfig<any>, data: RefObject<GameData>) {
-    (!beforeRead || beforeRead(data)) && internalRead(myReader,obj, data);
+    (!beforeRead || beforeRead(data)) && internalRead(myReader, obj, data);
     if (afterRead) { afterRead(data); }
   }
 

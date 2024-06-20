@@ -11,7 +11,7 @@ import * as MainHeader from '@components/scenario/01_mainHeader';
 import RawDataTab from '@tabs/RawDataTab';
 import { FieldConfig, MainHeaderComponents, ScenarioComponents, valueTypes } from '@interfaces/scenarioInterfaces';
 import { GameData } from '@root/core/io/GameData';
-import { useHeaderSubscription2 } from '@hooks/useHeaderSubscription2';
+import { useCommComponent } from '@hooks/useHeaderSubscription2';
 import { ascii, str, u32 } from '@utils/dataFactories';
 
 
