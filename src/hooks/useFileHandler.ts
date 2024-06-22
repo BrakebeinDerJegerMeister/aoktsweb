@@ -31,6 +31,7 @@ export const useFileHandler = () => {
         if (checkFileValidity(file)) {
             const reader = new FileReader();
             reader.onload = (e) => {
+                console.clear();
                 console.log(file)
                 const arrayBuffer = e.target?.result as ArrayBuffer;
                 setFileData({

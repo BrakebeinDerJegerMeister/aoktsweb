@@ -8,11 +8,10 @@ import { FileData } from '@hooks/useFileHandler';
 import { fastReadScenario } from '@root/core/io/readScenario';
 
 import * as MainHeader from '@components/scenario/01_mainHeader';
-import RawDataTab from '@tabs/RawDataTab';
-import { FieldConfig, MainHeaderComponents, ScenarioComponents, valueTypes } from '@interfaces/scenarioInterfaces';
+import {  MainHeaderComponents, ScenarioComponents } from '@interfaces/scenarioInterfaces';
 import { GameData } from '@root/core/io/GameData';
-import { useCommComponent } from '@hooks/useHeaderSubscription2';
-import { ascii, str, u32 } from '@utils/dataFactories';
+
+
 
 
 enum myActionMode {
@@ -49,13 +48,13 @@ const ScenarioPage: React.FC = () => {
 
 
 
-  let uncompressedHeaderFields: MainHeaderComponents = {
+  const uncompressedHeaderFields = useRef({
     "version": <MainHeader.Version mySubscriber={mySubscriber} />,
     "headerLength": <MainHeader.HeaderLength mySubscriber={mySubscriber}/>,
-    // "headerType": <MainHeader.HeaderType mySubscriber={mySubscriber}/>,
-    // "lastSaveTimestamp": <MainHeader.LastSaveTimestamp  mySubscriber={mySubscriber}/>,
-    // "instructions": <MainHeader.Instructions  mySubscriber={mySubscriber}/>,
-    // "individualVictories": <MainHeader.IndividualVictories  mySubscriber={mySubscriber}/>,
+    "headerType": <MainHeader.HeaderType mySubscriber={mySubscriber}/>,
+    "lastSaveTimestamp": <MainHeader.LastSaveTimestamp  mySubscriber={mySubscriber}/>,
+    "instructions": <MainHeader.Instructions  mySubscriber={mySubscriber}/>,
+    "individualVictories": <MainHeader.IndividualVictories  mySubscriber={mySubscriber}/>,
     // "playerCount": <MainHeader.PlayerCount />,
     // "value1000": <MainHeader.Value1000 />,
     // "gameEdition": <MainHeader.GameEdition />,
@@ -64,9 +63,9 @@ const ScenarioPage: React.FC = () => {
     // "creatorName": <MainHeader.CreatorName />,
     // "triggerCount": <MainHeader.TriggerCount />,
     // "compressedData": <MainHeader.CompressedData />,
-  }
+  });
   let scenario: ScenarioComponents = {
-    "uncompressedHeader": uncompressedHeaderFields,
+    "uncompressedHeader": uncompressedHeaderFields.current as MainHeaderComponents,
   }
 
   useEffect(() => {
@@ -89,7 +88,7 @@ const ScenarioPage: React.FC = () => {
 
         Object.entries(mySubscriber.current).forEach(([_key, subscriberElement]) => {
           subscriberElement.read(myReader2);
-          console.log(subscriberElement);
+          //console.log(subscriberElement);
           
         });
 
@@ -105,7 +104,7 @@ const ScenarioPage: React.FC = () => {
   useEffect(() => {
     if (!fileData) return;
 
-    console.log(fileData)
+    //console.log(fileData)
     let myData = {} as GameData;
 
 

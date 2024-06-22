@@ -17,6 +17,10 @@ const Tab2Component: React.FC<Props> = ({ gameData, scenario }) => {
       <p>Tab2</p>
       {scenario?.uncompressedHeader.version}
       {scenario?.uncompressedHeader.headerLength}
+      {scenario?.uncompressedHeader.headerType}
+      {scenario?.uncompressedHeader.lastSaveTimestamp}
+      {scenario?.uncompressedHeader.instructions}
+      {scenario?.uncompressedHeader.individualVictories}
       {/*
         gameData && gameData.uncompressedHeader && Object.entries(gameData.uncompressedHeader).map(([name, comp], i) => {
           //console.log("Tab 2");
