@@ -24,8 +24,8 @@ const UseCommComponent: React.FC<UseCommComponentProps> = ({ mySubscriber, myNam
 
   const { getValue2, setValue2, getRawValue2, setRawValue2 } = myHooks;
 
-  const beforeRead = myCallbacks.beforeRead ;
-  const afterRead = myCallbacks.afterRead ;
+  const beforeRead = myCallbacks.beforeRead;
+  const afterRead = myCallbacks.afterRead;
 
   const value = useRef<any>();
   const rawValue = useRef<any>();
@@ -34,22 +34,23 @@ const UseCommComponent: React.FC<UseCommComponentProps> = ({ mySubscriber, myNam
 
   const read = function (myReader: any) {
 
-    let ret_br = beforeRead && beforeRead(mySubscriber);
+    let ret_br = (beforeRead && beforeRead(mySubscriber)) ?? true;
 
+    if (ret_br) {
+      let ret = myType().read(myReader);
 
-    let ret = myType().read(myReader);
+      value.current = ret.typedValue;
+      rawValue.current = ret.rawValue;
 
-    value.current = ret.typedValue;
-    rawValue.current = ret.rawValue;
+      setValue2(ret.typedValue);
+      setRawValue2(ret.rawValue);
 
-    setValue2(ret.typedValue);
-    setRawValue2(ret.rawValue);
-
+    }
     let ret_ar = afterRead && afterRead(mySubscriber);
   }
 
   useEffect(() => {
-    mySubscriber.current[myName] = {
+    mySubscriber[myName] = {
       name: myName,
       hooks: { getValue2, setValue2, getRawValue2, setRawValue2, value, rawValue },
       read: read,
@@ -57,12 +58,12 @@ const UseCommComponent: React.FC<UseCommComponentProps> = ({ mySubscriber, myNam
 
     // Fonction appelée au démontage du composant !!!!!!
     return () => {
-      delete mySubscriber.current["version"];
+      //delete mySubscriber.current["version"];
     };
   }, [getValue2, setValue2, getRawValue2, setRawValue2]);
 
   return null;
-  
+
 };
 
 export default UseCommComponent;

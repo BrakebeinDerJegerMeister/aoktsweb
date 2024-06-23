@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import UseCommComponent from '@hooks/UseCommComponent';
 import { ScnCompAttribute } from '@root/interfaces';
 import { str, u32 } from '@utils/dataFactories';
@@ -13,10 +14,12 @@ const Instructions: React.FC<ScnCompAttribute> = ({   mySubscriber }) => {
   UseCommComponent({mySubscriber, myName:"instructions", myType:str(u32()), myHooks});
 
 
-
+  const normalizedText = (getValue2 && getValue2.replace(/\r\n/g, '\n')) ?? null;
 
   return (
-    <div>Instructions<span>{getValue2}</span></div>
+    <div>Instructions<p>{normalizedText && normalizedText.split('\n').map((line: string, index: number) => {
+      return <Box key={index}>{line}</Box>;
+    })}</p></div>
   );
 };
 

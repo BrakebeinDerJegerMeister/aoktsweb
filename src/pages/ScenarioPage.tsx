@@ -31,7 +31,7 @@ const ScenarioPage: React.FC = () => {
   const [myEerror, setMyError] = useState<Error>();
   const [myScenario, setMyScenario] = useState<ScenarioComponents>();
   const [myAction, setMyAction] = useState<myActionMode>(myActionMode.none);
-  const mySubscriber = useRef({});
+  const mySubscriber = useRef({uncompressedHeader:{}});
 
   const location = useLocation();
 
@@ -47,14 +47,15 @@ const ScenarioPage: React.FC = () => {
 
 
 
+  const uncompressedHeader = mySubscriber.current.uncompressedHeader; 
 
   const uncompressedHeaderFields = useRef({
-    "version": <MainHeader.Version mySubscriber={mySubscriber} />,
-    "headerLength": <MainHeader.HeaderLength mySubscriber={mySubscriber}/>,
-    "headerType": <MainHeader.HeaderType mySubscriber={mySubscriber}/>,
-    "lastSaveTimestamp": <MainHeader.LastSaveTimestamp  mySubscriber={mySubscriber}/>,
-    "instructions": <MainHeader.Instructions  mySubscriber={mySubscriber}/>,
-    "individualVictories": <MainHeader.IndividualVictories  mySubscriber={mySubscriber}/>,
+    "version": <MainHeader.Version mySubscriber={uncompressedHeader} />,
+    "headerLength": <MainHeader.HeaderLength mySubscriber={uncompressedHeader}/>,
+    "headerType": <MainHeader.HeaderType mySubscriber={uncompressedHeader}/>,
+    "lastSaveTimestamp": <MainHeader.LastSaveTimestamp  mySubscriber={uncompressedHeader}/>,
+    "instructions": <MainHeader.Instructions  mySubscriber={uncompressedHeader}/>,
+    "individualVictories": <MainHeader.IndividualVictories  mySubscriber={uncompressedHeader}/>,
     // "playerCount": <MainHeader.PlayerCount />,
     // "value1000": <MainHeader.Value1000 />,
     // "gameEdition": <MainHeader.GameEdition />,
@@ -86,7 +87,8 @@ const ScenarioPage: React.FC = () => {
           "dataView": new DataView(myMainUint8Array.buffer),
         }
 
-        Object.entries(mySubscriber.current).forEach(([_key, subscriberElement]) => {
+        Object.entries(mySubscriber.current["uncompressedHeader"]).forEach(([_key, subscriberElement]) => {
+          
           subscriberElement.read(myReader2);
           //console.log(subscriberElement);
           
