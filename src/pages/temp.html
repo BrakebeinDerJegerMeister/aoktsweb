@@ -1,0 +1,130 @@
+{% extends '@nucleus/partials/particle.html.twig' %}
+
+{% block particle %}
+    {% block layout %}
+
+        <div class="{{ particle.class|e }} g-owlcarousel-lists g-owlcarousel-lists-{{ particle.displayitems }}-items">
+            {% if particle.title or particle.description %}
+                <div class="g-grid">
+                    <div class="g-block">
+                        <div class="g-content g-owlcarousel-header">
+                            {% if particle.title %}<h2 class="g-title">{{ particle.title }}</h2>{% endif %}
+                            {% if particle.description %}<div class="g-owlcarousel-description">{{ particle.description|html|raw }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div id="g-owlcarousel-{{ id }}" data-owlcarousel-id="g-owlcarousel-{{ id }}" class="g-owlcarousel owl-carousel">
+
+                {% for row in particle.items|batch(particle.displayitems) %}
+                    <div class="item">
+                        {% for item in row  %}
+                     
+                            <div class="g-owlcarousel-item">  
+
+                                {% if item.image %}
+                                    <img src="{{ url(item.image)|e }}" class="g-owlcarousel-item-image" alt="{{ item.title|e }}" />
+                                {% endif %}   
+                                <div>
+                                {% if item.title %}
+                                    <h4 class="g-owlcarousel-item-title{% if particle.accordion %} padding{% endif %}">
+                                        {% if item.link %}<a href="{{ item.link|e }}">{% endif %}
+
+                                        {{ item.title|html|raw }}
+
+                                        {% if item.link %}</a>{% endif %}
+
+                                        {% if particle.accordion %}<span class="indicator"><span>+</span></span>{% endif %}
+                                    </h4>
+                                {% endif %}
+
+                                {% if item.image or item.desc or item.link %}
+                                    <div class="g-owlcarousel-content">
+
+                                        {% if item.desc %}
+                                            <div class="g-owlcarousel-item-desc">
+                                                {% if item.desc %}<p>{{ item.desc|html|raw }}</p>{% endif %}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if item.link %}
+                                            <a target="{{ item.buttontarget|default('_self')|e }}" class="g-owlcarousel-item-button readon" href="{{ item.link|e }}">
+                                                <span>{{ item.linktext|html|raw|default('Read More') }}</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    {% endblock %}
+{% endblock %}
+
+{% block javascript %}
+    {% do gantry.load('jquery') %}
+    {% if particle.accordion %}
+        <script src="{{ url('gantry-theme://js/juihelper.js') }}"></script>
+    {% endif %}
+{% endblock %}
+
+{% block javascript_footer %}
+    <script src="{{ url('gantry-theme://js/owlcarousel.js') }}"></script>
+    <script type="text/javascript">
+    jQuery(document).ready(function () {
+        var owl{{ id|replace({'-':'_'}) }} = jQuery('#g-owlcarousel-{{ id }}');
+        owl{{ id|replace({'-':'_'}) }}.owlCarousel({
+            items: 1,
+            rtl: {% if gantry.page.direction == 'rtl' %}true{% else %}false{% endif %},
+            {% if particle.nav == 'enabled' %}
+            nav: true,
+            navText: ['{{ particle.prevText|default('&lsaquo;')|e('js') }}', '{{ particle.nextText|default('&rsaquo;')|e('js') }}'],
+            {% else %}
+            nav: false,
+            {% endif %}
+            {% if particle.dots == 'enabled' %}
+            dots: true,
+            {% else %}
+            dots: false,
+            {% endif %}
+            {% if particle.loop == 'enabled' %}
+            loop: true,
+            {% else %}
+            loop: false,
+            {% endif %}
+            {% if particle.autoplay == 'enabled' %}
+            autoplay: true,
+            autoplayTimeout: {{ particle.autoplaySpeed|default('5000') }},
+            {% if particle.pauseOnHover == 'enabled' %}
+            autoplayHoverPause: true,
+            {% else %}
+            autoplayHoverPause: false,
+            {% endif %}
+            {% else %}
+            autoplay: false,
+            {% endif %}
+            URLhashListener: true,
+        })
+    });
+    
+    {% if particle.accordion == 'enabled' %}
+    jQuery(document).ready(function () {
+        jQuery("#g-owlcarousel-{{ id }}").accordion({
+            heightStyle: "content",
+            header: ".g-owlcarousel-item-title",
+            collapsible: true,
+            active: {{ particle.displayitems * 2 }},
+            beforeActivate: function (event, ui) {
+                window.dispatchEvent(new Event('resize'));
+            }
+        })
+    });
+    {% endif %}
+    </script>
+{% endblock %}
